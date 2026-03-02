@@ -1,16 +1,18 @@
+
+import { Heading } from './Heading';
+
+
+import '../styles/theme.css'
+import '../styles/global.css'
+
+
+
+
 export function App() {
-    console.log('Oi');
-
+  console.log('Oi');
     return (
-        <div>
-            <h1>OLa</h1>
-            <p>
-                qauqluer coisa
-            </p>
-        </div>
+       <>
+       <Heading />
+       </>
     );
-
-    
 }
-
-export default App;
