@@ -47,7 +47,7 @@ const DEFAULT_TIMER_MODES: TimerMode[] = [
     id: 'shortBreak',
     label: 'Pausa curta',
     duration: 5 * MINUTE_IN_SECONDS,
-    description: 'Recuperacao rapida',
+    description: 'Recuperação rápida',
     category: 'break',
   },
   {
@@ -76,7 +76,7 @@ function formatSessionDate(isoDate: string) {
   const date = new Date(isoDate);
 
   if (Number.isNaN(date.getTime())) {
-    return 'Data indisponivel';
+    return 'Data indisponível';
   }
 
   return new Intl.DateTimeFormat('pt-BR', {
@@ -142,7 +142,7 @@ function loadCustomModes() {
           id: typeof mode.id === 'string' ? mode.id : createStorageId('custom'),
           label,
           duration,
-          description: description || 'Concentracao personalizada',
+          description: description || 'Concentração personalizada',
           category: 'focus',
           isCustom: true,
         },
@@ -248,8 +248,6 @@ function playBellSound(audioContext: AudioContext) {
 function drawPictureInPictureTimer(
   canvas: HTMLCanvasElement,
   timerLabel: string,
-  activeMode: TimerMode,
-  statusText: string,
 ) {
   const context = canvas.getContext('2d');
 
@@ -258,42 +256,16 @@ function drawPictureInPictureTimer(
   }
 
   const { height, width } = canvas;
-  const progressGradient = context.createLinearGradient(0, 0, width, height);
-
-  progressGradient.addColorStop(0, '#050505');
-  progressGradient.addColorStop(0.42, '#111111');
-  progressGradient.addColorStop(1, '#061316');
 
   context.clearRect(0, 0, width, height);
-  context.fillStyle = progressGradient;
+  context.fillStyle = '#050505';
   context.fillRect(0, 0, width, height);
 
-  context.strokeStyle = 'rgba(184, 230, 255, 0.32)';
-  context.lineWidth = 4;
-  context.beginPath();
-  context.moveTo(46, 238);
-  context.bezierCurveTo(165, 72, 308, 326, 452, 92);
-  context.stroke();
-
-  context.strokeStyle = 'rgba(255, 255, 255, 0.16)';
-  context.lineWidth = 2;
-  context.beginPath();
-  context.moveTo(18, 54);
-  context.bezierCurveTo(130, 120, 270, 12, 494, 58);
-  context.stroke();
-
-  context.fillStyle = '#ffffff';
-  context.font = '800 32px Inter, system-ui, sans-serif';
-  context.textAlign = 'center';
-  context.fillText(activeMode.label, width / 2, 54);
-
   context.fillStyle = '#f5f5f5';
-  context.font = '900 116px Inter, system-ui, sans-serif';
-  context.fillText(timerLabel, width / 2, 178);
-
-  context.fillStyle = '#b8b8b8';
-  context.font = '700 24px Inter, system-ui, sans-serif';
-  context.fillText(statusText, width / 2, 230);
+  context.font = '900 82px Inter, system-ui, sans-serif';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText(timerLabel, width / 2, height / 2 + 2);
 }
 
 export function App() {
@@ -343,9 +315,9 @@ export function App() {
       ? 'Iniciar'
       : 'Continuar';
   const statusText = isTimerFinished
-    ? 'Sessao finalizada'
+    ? 'Sessão finalizada'
     : isRunning
-      ? 'Sessao em andamento'
+      ? 'Sessão em andamento'
       : 'Pronto para focar';
   const isPictureInPictureSupported =
     document.pictureInPictureEnabled &&
@@ -388,14 +360,14 @@ export function App() {
 
       if (!canvas || !video || !isPictureInPictureSupported) {
         if (showError) {
-          setPictureInPictureError('Picture-in-Picture nao esta disponivel neste navegador.');
+          setPictureInPictureError('Picture-in-Picture não está disponível neste navegador.');
         }
 
         return false;
       }
 
       try {
-        drawPictureInPictureTimer(canvas, timerLabel, activeMode, statusText);
+        drawPictureInPictureTimer(canvas, timerLabel);
 
         if (!video.srcObject) {
           video.srcObject = canvas.captureStream(1);
@@ -408,13 +380,13 @@ export function App() {
         return true;
       } catch {
         if (showError) {
-          setPictureInPictureError('Nao foi possivel abrir o Picture-in-Picture.');
+          setPictureInPictureError('Não foi possível abrir o Picture-in-Picture.');
         }
 
         return false;
       }
     },
-    [activeMode, isPictureInPictureSupported, statusText, timerLabel],
+    [isPictureInPictureSupported, timerLabel],
   );
 
   useEffect(() => {
@@ -482,8 +454,8 @@ export function App() {
       return;
     }
 
-    drawPictureInPictureTimer(canvas, timerLabel, activeMode, statusText);
-  }, [activeMode, statusText, timerLabel]);
+    drawPictureInPictureTimer(canvas, timerLabel);
+  }, [timerLabel]);
 
   useEffect(() => {
     const video = pictureInPictureVideoRef.current;
@@ -575,7 +547,7 @@ export function App() {
 
       await requestPictureInPicture(true);
     } catch {
-      setPictureInPictureError('Nao foi possivel abrir o Picture-in-Picture.');
+      setPictureInPictureError('Não foi possível abrir o Picture-in-Picture.');
     }
   }
 
@@ -592,7 +564,7 @@ export function App() {
     }
 
     if (!Number.isInteger(minutes) || minutes < 1 || minutes > MAX_CUSTOM_MODE_MINUTES) {
-      setCustomModeError(`Use uma duracao entre 1 e ${MAX_CUSTOM_MODE_MINUTES} minutos.`);
+      setCustomModeError(`Use uma duração entre 1 e ${MAX_CUSTOM_MODE_MINUTES} minutos.`);
       return;
     }
 
@@ -600,7 +572,7 @@ export function App() {
       id: createStorageId('custom'),
       label,
       duration: minutes * MINUTE_IN_SECONDS,
-      description: description || 'Concentracao personalizada',
+      description: description || 'Concentração personalizada',
       category: 'focus',
       isCustom: true,
     };
@@ -746,7 +718,7 @@ export function App() {
           <section className={styles.panelSection} aria-labelledby="custom-mode-title">
             <div className={styles.panelHeader}>
               <span>Modos</span>
-              <h2 id="custom-mode-title">Novo modo de concentracao</h2>
+              <h2 id="custom-mode-title">Novo modo de concentração</h2>
             </div>
 
             <form className={styles.customModeForm} onSubmit={handleCustomModeSubmit}>
@@ -773,7 +745,7 @@ export function App() {
               </label>
 
               <label className={styles.fullField}>
-                Descricao
+                Descrição
                 <input
                   maxLength={42}
                   onChange={(event) => setCustomModeDescription(event.target.value)}
@@ -796,8 +768,8 @@ export function App() {
 
           <section className={styles.panelSection} aria-labelledby="focus-history-title">
             <div className={styles.panelHeader}>
-              <span>Historico</span>
-              <h2 id="focus-history-title">Focos concluidos</h2>
+              <span>Histórico</span>
+              <h2 id="focus-history-title">Focos concluídos</h2>
             </div>
 
             {latestFocusSessions.length > 0 ? (
@@ -814,7 +786,7 @@ export function App() {
               </ol>
             ) : (
               <p className={styles.emptyHistory}>
-                Seus focos concluidos aparecem aqui quando o timer chega a zero.
+                Seus focos concluídos aparecem aqui quando o timer chega a zero.
               </p>
             )}
           </section>
@@ -824,9 +796,9 @@ export function App() {
       <canvas
         aria-hidden="true"
         className={styles.pictureInPictureMedia}
-        height="270"
+        height="120"
         ref={pictureInPictureCanvasRef}
-        width="520"
+        width="300"
       />
       <video
         aria-hidden="true"

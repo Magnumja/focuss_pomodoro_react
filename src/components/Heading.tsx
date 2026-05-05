@@ -8,7 +8,7 @@ type HeadingProps = {
 export function Heading({ title, subtitle }: HeadingProps) {
   return (
     <div className={styles.headingGroup}>
-      <span className={styles.eyebrow}>Focus system</span>
+      <span className={styles.eyebrow}>Sistema de foco</span>
       <h1 className={styles.heading} id="app-title">
         {title}
       </h1>
