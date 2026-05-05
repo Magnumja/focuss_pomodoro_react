@@ -3,13 +3,11 @@
   display: grid;
   gap: var(--space-8);
   justify-items: center;
-  margin-inline: auto;
   min-height: 100svh;
-  overflow: hidden;
   padding: var(--space-8) var(--space-4);
   position: relative;
   isolation: isolate;
-  width: min(100%, 1120px);
+  width: 100%;
 }
 
 .pageShell::before,
@@ -17,7 +15,7 @@
   content: '';
   inset: 0;
   pointer-events: none;
-  position: absolute;
+  position: fixed;
   z-index: -1;
 }
 
@@ -71,7 +69,7 @@
   display: grid;
   gap: var(--space-7);
   overflow: hidden;
-  padding: clamp(1.25rem, 4vw, 2.5rem);
+  padding: clamp(1.15rem, 4vw, 2.35rem);
   position: relative;
   z-index: 1;
   width: min(100%, 820px);
@@ -86,9 +84,11 @@
 }
 
 .modeSwitcher {
+  border-bottom: 1px solid var(--border-color);
   display: grid;
   gap: var(--space-3);
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  padding: 0 var(--space-6) var(--space-6) 0;
 }
 
 .modeItem {
@@ -124,6 +124,7 @@
 
 .modeButton:focus-visible,
 .removeModeButton:focus-visible,
+.pictureInPictureButton:focus-visible,
 .primaryButton:focus-visible,
 .secondaryButton:focus-visible,
 .addModeButton:focus-visible,
@@ -176,8 +177,9 @@
 .timerDisplay {
   align-items: center;
   display: grid;
-  gap: var(--space-3);
+  gap: var(--space-4);
   justify-items: center;
+  padding-block: var(--space-2);
   text-align: center;
 }
 
@@ -198,11 +200,6 @@
   line-height: 0.9;
 }
 
-.timerDisplay p {
-  color: var(--text-secondary);
-  margin: 0;
-}
-
 .progressTrack {
   background: var(--bg-elevated);
   border: 1px solid var(--border-color);
@@ -219,9 +216,11 @@
 }
 
 .actions {
+  border-bottom: 1px solid var(--border-color);
   display: grid;
   gap: var(--space-3);
   grid-template-columns: 1fr 1fr;
+  padding-bottom: var(--space-6);
 }
 
 .primaryButton,
@@ -267,13 +266,57 @@
   cursor: not-allowed;
 }
 
+.pictureInPictureButton {
+  align-items: center;
+  background: rgba(17, 17, 17, 0.9);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.7rem;
+  font-weight: 900;
+  height: 32px;
+  justify-content: center;
+  letter-spacing: 0;
+  min-width: 40px;
+  padding: 0 0.5rem;
+  position: absolute;
+  right: var(--space-5);
+  top: var(--space-5);
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+  z-index: 2;
+}
+
+.pictureInPictureButton:hover:not(:disabled) {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-primary);
+  transform: translateY(-1px);
+}
+
+.pictureInPictureButton:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.pictureInPictureError {
+  color: var(--accent-cool);
+  font-size: 0.86rem;
+  font-weight: 700;
+  margin: calc(var(--space-5) * -1) 0 0;
+  text-align: center;
+}
+
 .sessionStats {
-  border-top: 1px solid var(--border-color);
   display: grid;
   gap: var(--space-4);
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 0;
-  padding-top: var(--space-5);
 }
 
 .sessionStats div {
@@ -435,6 +478,45 @@
   margin: 0;
 }
 
+.pictureInPictureMedia {
+  block-size: 1px;
+  inline-size: 1px;
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
+.githubLink {
+  background: rgba(17, 17, 17, 0.78);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  bottom: var(--space-4);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.55rem 0.75rem;
+  position: fixed;
+  right: var(--space-4);
+  text-decoration: none;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+  z-index: 3;
+}
+
+.githubLink:hover,
+.githubLink:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-primary);
+  outline: none;
+  transform: translateY(-1px);
+}
+
 @media (max-width: 680px) {
   .pageShell {
     gap: var(--space-6);
@@ -451,6 +533,21 @@
   .managementGrid,
   .customModeForm {
     grid-template-columns: 1fr;
+  }
+
+  .modeSwitcher {
+    padding-right: 0;
+    padding-top: var(--space-5);
+  }
+
+  .pictureInPictureButton {
+    right: var(--space-3);
+    top: var(--space-3);
+  }
+
+  .githubLink {
+    bottom: var(--space-3);
+    right: var(--space-3);
   }
 
   .modeButton {

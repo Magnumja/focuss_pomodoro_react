@@ -9,17 +9,77 @@ html {
   min-width: 320px;
 }
 
+html::before {
+  background: #020202;
+  content: '';
+  inset: 0;
+  position: fixed;
+  z-index: -4;
+}
+
 body {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 34rem),
-    linear-gradient(135deg, var(--bg-primary), #0b0b0b 55%, var(--bg-secondary));
+    radial-gradient(ellipse at 18% 14%, rgba(184, 230, 255, 0.16), transparent 27rem),
+    radial-gradient(ellipse at 82% 24%, rgba(255, 255, 255, 0.1), transparent 30rem),
+    linear-gradient(135deg, #020202, #080808 42%, #020506 100%);
   color: var(--text-primary);
   font-family: var(--font-sans);
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body::before,
+body::after {
+  content: '';
+  inset: 0;
+  pointer-events: none;
+  position: fixed;
+}
+
+body::before {
+  background:
+    linear-gradient(118deg, transparent 0 12%, rgba(184, 230, 255, 0.18) 12.15%, transparent 12.8%),
+    linear-gradient(64deg, transparent 0 22%, rgba(245, 245, 245, 0.1) 22.2%, transparent 23%),
+    linear-gradient(152deg, transparent 0 42%, rgba(184, 230, 255, 0.12) 42.15%, transparent 43%),
+    repeating-linear-gradient(
+      126deg,
+      transparent 0 44px,
+      rgba(255, 255, 255, 0.035) 45px,
+      transparent 48px
+    );
+  filter: blur(0.4px);
+  opacity: 0.58;
+  z-index: 0;
+}
+
+body::after {
+  background:
+    conic-gradient(
+      from 222deg at 18% 18%,
+      transparent,
+      rgba(184, 230, 255, 0.18),
+      transparent 34%,
+      rgba(255, 255, 255, 0.08),
+      transparent 72%
+    ),
+    conic-gradient(
+      from 42deg at 80% 60%,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent 28%,
+      rgba(184, 230, 255, 0.13),
+      transparent 68%
+    );
+  filter: blur(42px) saturate(1.25);
+  opacity: 0.52;
+  transform: scale(1.08);
+  z-index: 0;
 }
 
 button,
@@ -35,6 +95,8 @@ button {
 
 #root {
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 ::selection {

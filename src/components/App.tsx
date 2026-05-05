@@ -245,8 +245,61 @@ function playBellSound(audioContext: AudioContext) {
   });
 }
 
+function drawPictureInPictureTimer(
+  canvas: HTMLCanvasElement,
+  timerLabel: string,
+  activeMode: TimerMode,
+  statusText: string,
+) {
+  const context = canvas.getContext('2d');
+
+  if (!context) {
+    return;
+  }
+
+  const { height, width } = canvas;
+  const progressGradient = context.createLinearGradient(0, 0, width, height);
+
+  progressGradient.addColorStop(0, '#050505');
+  progressGradient.addColorStop(0.42, '#111111');
+  progressGradient.addColorStop(1, '#061316');
+
+  context.clearRect(0, 0, width, height);
+  context.fillStyle = progressGradient;
+  context.fillRect(0, 0, width, height);
+
+  context.strokeStyle = 'rgba(184, 230, 255, 0.32)';
+  context.lineWidth = 4;
+  context.beginPath();
+  context.moveTo(46, 238);
+  context.bezierCurveTo(165, 72, 308, 326, 452, 92);
+  context.stroke();
+
+  context.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+  context.lineWidth = 2;
+  context.beginPath();
+  context.moveTo(18, 54);
+  context.bezierCurveTo(130, 120, 270, 12, 494, 58);
+  context.stroke();
+
+  context.fillStyle = '#ffffff';
+  context.font = '800 32px Inter, system-ui, sans-serif';
+  context.textAlign = 'center';
+  context.fillText(activeMode.label, width / 2, 54);
+
+  context.fillStyle = '#f5f5f5';
+  context.font = '900 116px Inter, system-ui, sans-serif';
+  context.fillText(timerLabel, width / 2, 178);
+
+  context.fillStyle = '#b8b8b8';
+  context.font = '700 24px Inter, system-ui, sans-serif';
+  context.fillText(statusText, width / 2, 230);
+}
+
 export function App() {
   const audioContextRef = useRef<AudioContext | null>(null);
+  const pictureInPictureCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const pictureInPictureVideoRef = useRef<HTMLVideoElement | null>(null);
   const [customModes, setCustomModes] = useState<TimerMode[]>(loadCustomModes);
   const [focusSessions, setFocusSessions] = useState<FocusSession[]>(loadFocusSessions);
   const [activeModeId, setActiveModeId] = useState(DEFAULT_TIMER_MODES[0].id);
@@ -258,6 +311,8 @@ export function App() {
   const [customModeMinutes, setCustomModeMinutes] = useState('30');
   const [customModeDescription, setCustomModeDescription] = useState('');
   const [customModeError, setCustomModeError] = useState('');
+  const [isPictureInPictureActive, setIsPictureInPictureActive] = useState(false);
+  const [pictureInPictureError, setPictureInPictureError] = useState('');
 
   const timerModes = useMemo(
     () => [...DEFAULT_TIMER_MODES, ...customModes],
@@ -277,7 +332,7 @@ export function App() {
       ),
     [focusSessions],
   );
-  const latestFocusSessions = focusSessions.slice(0, 4);
+  const latestFocusSessions = focusSessions.slice(0, 3);
   const progressPercentage =
     ((activeMode.duration - remainingSeconds) / activeMode.duration) * 100;
   const isTimerFinished = remainingSeconds === 0;
@@ -292,6 +347,10 @@ export function App() {
     : isRunning
       ? 'Sessao em andamento'
       : 'Pronto para focar';
+  const isPictureInPictureSupported =
+    document.pictureInPictureEnabled &&
+    'requestPictureInPicture' in HTMLVideoElement.prototype &&
+    'captureStream' in HTMLCanvasElement.prototype;
 
   const getAudioContext = useCallback(() => {
     audioContextRef.current ??= createAudioContext();
@@ -321,6 +380,42 @@ export function App() {
 
     playBellSound(audioContext);
   }, [getAudioContext]);
+
+  const requestPictureInPicture = useCallback(
+    async (showError = false) => {
+      const canvas = pictureInPictureCanvasRef.current;
+      const video = pictureInPictureVideoRef.current;
+
+      if (!canvas || !video || !isPictureInPictureSupported) {
+        if (showError) {
+          setPictureInPictureError('Picture-in-Picture nao esta disponivel neste navegador.');
+        }
+
+        return false;
+      }
+
+      try {
+        drawPictureInPictureTimer(canvas, timerLabel, activeMode, statusText);
+
+        if (!video.srcObject) {
+          video.srcObject = canvas.captureStream(1);
+        }
+
+        await video.play();
+        await video.requestPictureInPicture();
+        setPictureInPictureError('');
+
+        return true;
+      } catch {
+        if (showError) {
+          setPictureInPictureError('Nao foi possivel abrir o Picture-in-Picture.');
+        }
+
+        return false;
+      }
+    },
+    [activeMode, isPictureInPictureSupported, statusText, timerLabel],
+  );
 
   useEffect(() => {
     saveToStorage(CUSTOM_MODES_STORAGE_KEY, customModes);
@@ -380,6 +475,69 @@ export function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const canvas = pictureInPictureCanvasRef.current;
+
+    if (!canvas) {
+      return;
+    }
+
+    drawPictureInPictureTimer(canvas, timerLabel, activeMode, statusText);
+  }, [activeMode, statusText, timerLabel]);
+
+  useEffect(() => {
+    const video = pictureInPictureVideoRef.current;
+
+    if (!video) {
+      return;
+    }
+
+    function handleEnterPictureInPicture() {
+      setIsPictureInPictureActive(true);
+      setPictureInPictureError('');
+    }
+
+    function handleLeavePictureInPicture() {
+      setIsPictureInPictureActive(false);
+    }
+
+    video.addEventListener('enterpictureinpicture', handleEnterPictureInPicture);
+    video.addEventListener('leavepictureinpicture', handleLeavePictureInPicture);
+
+    return () => {
+      video.removeEventListener('enterpictureinpicture', handleEnterPictureInPicture);
+      video.removeEventListener('leavepictureinpicture', handleLeavePictureInPicture);
+    };
+  }, []);
+
+  useEffect(() => {
+    async function handleVisibilityChange() {
+      if (document.visibilityState === 'hidden') {
+        if (isRunning && !document.pictureInPictureElement) {
+          await requestPictureInPicture();
+        }
+
+        return;
+      }
+
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isRunning, requestPictureInPicture]);
+
+  useEffect(() => {
+    if (!isRunning && document.pictureInPictureElement) {
+      void document.exitPictureInPicture();
+    }
+  }, [isRunning]);
+
   function handleModeChange(modeId: string) {
     const nextMode = getModeById(modeId, timerModes);
 
@@ -406,6 +564,19 @@ export function App() {
   function handleTimerReset() {
     setRemainingSeconds(activeMode.duration);
     setIsRunning(false);
+  }
+
+  async function handlePictureInPictureToggle() {
+    try {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+        return;
+      }
+
+      await requestPictureInPicture(true);
+    } catch {
+      setPictureInPictureError('Nao foi possivel abrir o Picture-in-Picture.');
+    }
   }
 
   function handleCustomModeSubmit(event: FormEvent<HTMLFormElement>) {
@@ -460,12 +631,31 @@ export function App() {
     <main className={styles.pageShell}>
       <section className={styles.hero} aria-labelledby="app-title">
         <Heading
-          subtitle="Uma experiencia minimalista para proteger blocos de foco, pausas e ritmo de trabalho."
+          subtitle="Foco, pausas e ritmo em uma interface limpa."
           title="Chronos Pomodoro"
         />
       </section>
 
       <section className={styles.timerCard} aria-label="Timer Pomodoro">
+        <button
+          aria-label={
+            isPictureInPictureActive
+              ? 'Fechar Picture-in-Picture'
+              : 'Abrir Picture-in-Picture'
+          }
+          className={styles.pictureInPictureButton}
+          disabled={!isPictureInPictureSupported}
+          onClick={handlePictureInPictureToggle}
+          title={
+            isPictureInPictureActive
+              ? 'Fechar Picture-in-Picture'
+              : 'Abrir Picture-in-Picture'
+          }
+          type="button"
+        >
+          PiP
+        </button>
+
         <div className={styles.modeSwitcher} aria-label="Selecionar modo">
           {timerModes.map((mode) => {
             const isActive = mode.id === activeModeId;
@@ -479,7 +669,7 @@ export function App() {
                   type="button"
                 >
                   <span>{mode.label}</span>
-                  <small>{mode.description}</small>
+                  <small>{Math.round(mode.duration / MINUTE_IN_SECONDS)} min</small>
                 </button>
 
                 {mode.isCustom ? (
@@ -502,7 +692,6 @@ export function App() {
           <strong aria-live="polite" className={styles.timerValue}>
             {timerLabel}
           </strong>
-          <p>{activeMode.description}</p>
         </div>
 
         <div className={styles.progressTrack} aria-hidden="true">
@@ -527,6 +716,12 @@ export function App() {
             Resetar
           </button>
         </div>
+
+        {pictureInPictureError ? (
+          <p className={styles.pictureInPictureError} role="alert">
+            {pictureInPictureError}
+          </p>
+        ) : null}
 
         <dl className={styles.sessionStats}>
           <div>
@@ -625,6 +820,30 @@ export function App() {
           </section>
         </div>
       </section>
+
+      <canvas
+        aria-hidden="true"
+        className={styles.pictureInPictureMedia}
+        height="270"
+        ref={pictureInPictureCanvasRef}
+        width="520"
+      />
+      <video
+        aria-hidden="true"
+        className={styles.pictureInPictureMedia}
+        muted
+        playsInline
+        ref={pictureInPictureVideoRef}
+      />
+
+      <a
+        className={styles.githubLink}
+        href="https://github.com/Magnumja"
+        rel="noreferrer"
+        target="_blank"
+      >
+        GitHub
+      </a>
     </main>
   );
 }
