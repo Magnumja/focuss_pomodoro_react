@@ -8,7 +8,7 @@ function createMainWindow() {
     minWidth: 360,
     minHeight: 640,
     backgroundColor: '#050505',
-    title: 'Chronos Pomodoro',
+    title: 'Focuss Pomodoro',
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,

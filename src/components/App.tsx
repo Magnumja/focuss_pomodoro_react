@@ -30,8 +30,8 @@ type FocusSession = {
 };
 
 const MINUTE_IN_SECONDS = 60;
-const CUSTOM_MODES_STORAGE_KEY = 'chronos-pomodoro:custom-modes';
-const FOCUS_SESSIONS_STORAGE_KEY = 'chronos-pomodoro:focus-sessions';
+const CUSTOM_MODES_STORAGE_KEY = 'focuss-pomodoro:custom-modes';
+const FOCUS_SESSIONS_STORAGE_KEY = 'focuss-pomodoro:focus-sessions';
 const MAX_CUSTOM_MODE_MINUTES = 180;
 const MAX_STORED_FOCUS_SESSIONS = 200;
 
@@ -437,7 +437,7 @@ export function App() {
     document.title = `${timerLabel} - ${activeMode.label}`;
 
     return () => {
-      document.title = 'Chronos Pomodoro';
+      document.title = 'Focuss Pomodoro';
     };
   }, [activeMode.label, timerLabel]);
 
@@ -604,7 +604,7 @@ export function App() {
       <section className={styles.hero} aria-labelledby="app-title">
         <Heading
           subtitle="Foco, pausas e ritmo em uma interface limpa."
-          title="Chronos Pomodoro"
+          title="Focuss Pomodoro"
         />
       </section>
 
