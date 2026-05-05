@@ -1,11 +1,43 @@
-body{
-    font-family:  sans-serif;
-    font-size: 30px;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-
-h1{
-
-    color: var(--primary-color)
+html {
+  background: var(--bg-primary);
+  min-width: 320px;
 }
 
+body {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 34rem),
+    linear-gradient(135deg, var(--bg-primary), #0b0b0b 55%, var(--bg-secondary));
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  margin: 0;
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  border: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(184, 230, 255, 0.28);
+  color: var(--text-primary);
+}

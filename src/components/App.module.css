@@ -1,0 +1,487 @@
+.pageShell {
+  align-items: center;
+  display: grid;
+  gap: var(--space-8);
+  justify-items: center;
+  margin-inline: auto;
+  min-height: 100svh;
+  overflow: hidden;
+  padding: var(--space-8) var(--space-4);
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 1120px);
+}
+
+.pageShell::before,
+.pageShell::after {
+  content: '';
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.pageShell::before {
+  background:
+    linear-gradient(115deg, transparent 0 18%, rgba(184, 230, 255, 0.18) 18.2%, transparent 18.8%),
+    linear-gradient(245deg, transparent 0 28%, rgba(245, 245, 245, 0.12) 28.2%, transparent 29%),
+    repeating-linear-gradient(
+      115deg,
+      transparent 0 64px,
+      rgba(184, 230, 255, 0.07) 66px,
+      transparent 68px
+    );
+  filter: blur(0.2px);
+  mask-image: linear-gradient(180deg, transparent, #000 12%, #000 78%, transparent);
+  opacity: 0.52;
+  transform: translate3d(0, 0, 0);
+}
+
+.pageShell::after {
+  background:
+    conic-gradient(
+      from 210deg at 52% 34%,
+      transparent 0deg,
+      rgba(184, 230, 255, 0.2) 32deg,
+      transparent 74deg,
+      rgba(255, 255, 255, 0.12) 118deg,
+      transparent 170deg,
+      rgba(184, 230, 255, 0.11) 228deg,
+      transparent 292deg
+    );
+  filter: blur(34px);
+  opacity: 0.38;
+  transform: scale(1.08);
+  animation: neonPulse 8s ease-in-out infinite alternate;
+}
+
+.hero {
+  padding-top: var(--space-4);
+  position: relative;
+  z-index: 1;
+}
+
+.timerCard {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0)),
+    var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  display: grid;
+  gap: var(--space-7);
+  overflow: hidden;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  position: relative;
+  z-index: 1;
+  width: min(100%, 820px);
+}
+
+.timerCard::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  content: '';
+  height: 1px;
+  inset: 0 0 auto;
+  position: absolute;
+}
+
+.modeSwitcher {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.modeItem {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.modeButton {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: grid;
+  gap: var(--space-1);
+  min-height: 76px;
+  padding: 0.95rem;
+  text-align: left;
+  width: 100%;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.modeButton:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.modeButton:focus-visible,
+.removeModeButton:focus-visible,
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible,
+.addModeButton:focus-visible,
+.customModeForm input:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.modeButton span {
+  font-size: 0.98rem;
+  font-weight: 800;
+}
+
+.modeButton small {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.modeButtonActive {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-primary);
+}
+
+.modeButtonActive small {
+  color: var(--accent-muted);
+}
+
+.removeModeButton {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 800;
+  min-height: 34px;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.removeModeButton:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.timerDisplay {
+  align-items: center;
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+  text-align: center;
+}
+
+.statusBadge {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 0.45rem 0.7rem;
+}
+
+.timerValue {
+  color: var(--text-primary);
+  font-size: clamp(4.8rem, 18vw, 9.5rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 850;
+  line-height: 0.9;
+}
+
+.timerDisplay p {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.progressTrack {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  height: 10px;
+  overflow: hidden;
+}
+
+.progressTrack span {
+  background: linear-gradient(90deg, var(--accent), var(--accent-cool));
+  display: block;
+  height: 100%;
+  transition: width 260ms ease;
+}
+
+.actions {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: 1fr 1fr;
+}
+
+.primaryButton,
+.secondaryButton {
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 800;
+  min-height: 54px;
+  padding: 0.9rem 1rem;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.primaryButton {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: var(--bg-primary);
+}
+
+.primaryButton:hover {
+  background: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.secondaryButton {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.secondaryButton:hover:not(:disabled) {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
+.secondaryButton:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.sessionStats {
+  border-top: 1px solid var(--border-color);
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding-top: var(--space-5);
+}
+
+.sessionStats div {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.sessionStats dt {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.sessionStats dd {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.managementGrid {
+  border-top: 1px solid var(--border-color);
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: minmax(0, 1.2fr) minmax(240px, 0.8fr);
+  padding-top: var(--space-6);
+}
+
+.panelSection {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.panelHeader {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.panelHeader span {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.panelHeader h2 {
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.customModeForm {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: minmax(0, 1fr) minmax(88px, 0.35fr);
+}
+
+.customModeForm label {
+  color: var(--text-secondary);
+  display: grid;
+  font-size: 0.82rem;
+  font-weight: 800;
+  gap: var(--space-2);
+}
+
+.customModeForm input {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  min-height: 46px;
+  padding: 0.8rem 0.9rem;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease;
+  width: 100%;
+}
+
+.customModeForm input:hover,
+.customModeForm input:focus {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+}
+
+.customModeForm input::placeholder {
+  color: var(--text-disabled);
+}
+
+.fullField,
+.formError,
+.addModeButton {
+  grid-column: 1 / -1;
+}
+
+.formError {
+  color: var(--accent-cool);
+  font-size: 0.86rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.addModeButton {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 800;
+  min-height: 50px;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.addModeButton:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-primary);
+  transform: translateY(-1px);
+}
+
+.focusHistory {
+  display: grid;
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.focusHistory li {
+  border-bottom: 1px solid var(--border-color);
+  display: grid;
+  gap: var(--space-1);
+  padding-bottom: var(--space-3);
+}
+
+.focusHistory li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.focusHistory strong {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.focusHistory span,
+.emptyHistory {
+  color: var(--text-muted);
+  font-size: 0.86rem;
+}
+
+.emptyHistory {
+  margin: 0;
+}
+
+@media (max-width: 680px) {
+  .pageShell {
+    gap: var(--space-6);
+    padding: var(--space-6) var(--space-3);
+  }
+
+  .timerCard {
+    gap: var(--space-5);
+  }
+
+  .modeSwitcher,
+  .actions,
+  .sessionStats,
+  .managementGrid,
+  .customModeForm {
+    grid-template-columns: 1fr;
+  }
+
+  .modeButton {
+    min-height: 68px;
+    text-align: center;
+  }
+
+  .timerValue {
+    font-size: clamp(4.4rem, 23vw, 6.4rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pageShell::after,
+  .modeButton,
+  .primaryButton,
+  .secondaryButton,
+  .progressTrack span {
+    animation: none;
+    transition: none;
+  }
+}
+
+@keyframes neonPulse {
+  from {
+    opacity: 0.24;
+    transform: scale(1.04) rotate(-1deg);
+  }
+
+  to {
+    opacity: 0.46;
+    transform: scale(1.1) rotate(1deg);
+  }
+}
