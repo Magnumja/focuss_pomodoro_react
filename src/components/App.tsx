@@ -1226,49 +1226,57 @@ export function App() {
           </div>
         ) : null}
 
-        <dl className={styles.sessionStats}>
-          <div>
-            <dt>Modo atual</dt>
-            <dd>{activeMode.label}</dd>
+        <section className={styles.infoBubble} aria-labelledby="focus-info-title">
+          <div className={styles.bubbleHeader}>
+            <span>Progresso</span>
+            <h2 id="focus-info-title">Meta e sessão</h2>
           </div>
-          <div>
-            <dt>Focos hoje</dt>
-            <dd>{todaysFocuses}</dd>
-          </div>
-          <div>
-            <dt>Total salvo</dt>
-            <dd>{completedFocuses}</dd>
-          </div>
-          <div>
-            <dt>Minutos focados</dt>
-            <dd>{focusedMinutes}</dd>
-          </div>
-        </dl>
 
-        <section className={styles.focusIdeas} aria-label="Ideias para a sessao">
-          <article className={styles.focusIdeaCard}>
-            <span>Meta de hoje</span>
-            <strong>
-              {todaysFocuses}/{DAILY_FOCUS_GOAL} focos
-            </strong>
-            <div className={styles.focusIdeaProgress} aria-hidden="true">
-              <span style={{ width: `${dailyGoalProgress}%` }} />
+          <dl className={styles.sessionStats}>
+            <div>
+              <dt>Modo atual</dt>
+              <dd>{activeMode.label}</dd>
             </div>
-          </article>
+            <div>
+              <dt>Focos hoje</dt>
+              <dd>{todaysFocuses}</dd>
+            </div>
+            <div>
+              <dt>Total salvo</dt>
+              <dd>{completedFocuses}</dd>
+            </div>
+            <div>
+              <dt>Minutos focados</dt>
+              <dd>{focusedMinutes}</dd>
+            </div>
+          </dl>
 
-          <article className={styles.focusIdeaCard}>
-            <span>Ritual rapido</span>
-            <p>{activeModeRitual}</p>
-          </article>
+          <div className={styles.focusIdeas} aria-label="Ideias para a sessao">
+            <article className={styles.focusIdeaCard}>
+              <span>Meta de hoje</span>
+              <strong>
+                {todaysFocuses}/{DAILY_FOCUS_GOAL} focos
+              </strong>
+              <div className={styles.focusIdeaProgress} aria-hidden="true">
+                <span style={{ width: `${dailyGoalProgress}%` }} />
+              </div>
+            </article>
 
-          <article className={styles.focusIdeaCard}>
-            <span>Termina as</span>
-            <strong>{estimatedFinishTime}</strong>
-            <small>{isRunning ? 'em andamento' : 'se iniciar agora'}</small>
-          </article>
+            <article className={styles.focusIdeaCard}>
+              <span>Ritual rapido</span>
+              <p>{activeModeRitual}</p>
+            </article>
+
+            <article className={styles.focusIdeaCard}>
+              <span>Termina as</span>
+              <strong>{estimatedFinishTime}</strong>
+              <small>{isRunning ? 'em andamento' : 'se iniciar agora'}</small>
+            </article>
+          </div>
         </section>
 
-        <div className={styles.managementGrid}>
+        <section className={styles.modesBubble} aria-label="Modos e historico">
+          <div className={styles.managementGrid}>
           <section className={styles.panelSection} aria-labelledby="custom-mode-title">
             <div className={styles.panelHeader}>
               <span>Modos</span>
@@ -1344,7 +1352,8 @@ export function App() {
               </p>
             )}
           </section>
-        </div>
+          </div>
+        </section>
       </section>
 
       <canvas
