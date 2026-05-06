@@ -29,11 +29,27 @@ type FocusSession = {
   completedAt: string;
 };
 
+type DocumentPictureInPictureController = {
+  requestWindow: (options?: {
+    disallowReturnToOpener?: boolean;
+    height?: number;
+    preferInitialWindowPlacement?: boolean;
+    width?: number;
+  }) => Promise<Window>;
+  window?: Window | null;
+};
+
+type WindowWithDocumentPictureInPicture = Window & {
+  documentPictureInPicture?: DocumentPictureInPictureController;
+};
+
 const MINUTE_IN_SECONDS = 60;
 const CUSTOM_MODES_STORAGE_KEY = 'focuss-pomodoro:custom-modes';
 const FOCUS_SESSIONS_STORAGE_KEY = 'focuss-pomodoro:focus-sessions';
 const MAX_CUSTOM_MODE_MINUTES = 180;
 const MAX_STORED_FOCUS_SESSIONS = 200;
+const PICTURE_IN_PICTURE_WIDTH = 184;
+const PICTURE_IN_PICTURE_HEIGHT = 72;
 
 const DEFAULT_TIMER_MODES: TimerMode[] = [
   {
@@ -256,22 +272,223 @@ function drawPictureInPictureTimer(
   }
 
   const { height, width } = canvas;
+  const iconCenterX = 30;
+  const iconCenterY = height / 2;
 
   context.clearRect(0, 0, width, height);
-  context.fillStyle = '#050505';
+  context.fillStyle = '#070707';
   context.fillRect(0, 0, width, height);
 
+  context.strokeStyle = '#b8e6ff';
+  context.lineCap = 'round';
+  context.lineWidth = 3;
+  context.beginPath();
+  context.arc(iconCenterX, iconCenterY, 13, 0, Math.PI * 2);
+  context.stroke();
+
+  context.beginPath();
+  context.moveTo(iconCenterX, iconCenterY);
+  context.lineTo(iconCenterX, iconCenterY - 7);
+  context.moveTo(iconCenterX, iconCenterY);
+  context.lineTo(iconCenterX + 6, iconCenterY + 4);
+  context.stroke();
+
   context.fillStyle = '#f5f5f5';
-  context.font = '900 82px Inter, system-ui, sans-serif';
-  context.textAlign = 'center';
+  context.font = '850 36px Inter, system-ui, sans-serif';
+  context.textAlign = 'left';
   context.textBaseline = 'middle';
-  context.fillText(timerLabel, width / 2, height / 2 + 2);
+  context.fillText(timerLabel, 56, iconCenterY + 1);
+}
+
+function getDocumentPictureInPicture() {
+  return (window as WindowWithDocumentPictureInPicture).documentPictureInPicture;
+}
+
+function writeDocumentPictureInPictureShell(pipWindow: Window) {
+  const pipDocument = pipWindow.document;
+
+  pipDocument.title = 'Focuss Timer';
+  pipDocument.head.innerHTML = `
+    <style>
+      html,
+      body {
+        background: #070707;
+        color: #f5f5f5;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        width: 100%;
+      }
+
+      body {
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .pipShell {
+        align-items: center;
+        background: #070707;
+        box-sizing: border-box;
+        display: flex;
+        gap: 10px;
+        height: 100vh;
+        padding: 9px 10px;
+        width: 100vw;
+      }
+
+      .clockIcon {
+        border: 2px solid #b8e6ff;
+        border-radius: 50%;
+        box-sizing: border-box;
+        flex: 0 0 auto;
+        height: 20px;
+        opacity: 0.92;
+        position: relative;
+        width: 20px;
+      }
+
+      .clockIcon::before,
+      .clockIcon::after {
+        background: #b8e6ff;
+        border-radius: 999px;
+        content: "";
+        left: 8px;
+        position: absolute;
+        top: 4px;
+        transform-origin: bottom center;
+        width: 2px;
+      }
+
+      .clockIcon::before {
+        height: 7px;
+      }
+
+      .clockIcon::after {
+        height: 6px;
+        transform: rotate(120deg);
+      }
+
+      .timerValue {
+        color: #f5f5f5;
+        flex: 1 1 auto;
+        font-size: 30px;
+        font-variant-numeric: tabular-nums;
+        font-weight: 850;
+        letter-spacing: 0;
+        line-height: 1;
+        min-width: 0;
+        text-align: center;
+      }
+
+      .controlButton {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 7px;
+        color: #f5f5f5;
+        cursor: pointer;
+        display: inline-flex;
+        flex: 0 0 auto;
+        height: 30px;
+        justify-content: center;
+        padding: 0;
+        transition: background-color 140ms ease, border-color 140ms ease;
+        width: 30px;
+      }
+
+      .controlButton:hover,
+      .controlButton:focus-visible {
+        background: rgba(184, 230, 255, 0.18);
+        border-color: rgba(184, 230, 255, 0.58);
+        outline: none;
+      }
+
+      .controlIcon {
+        color: currentColor;
+        display: inline-flex;
+      }
+
+      .pauseIcon {
+        gap: 4px;
+      }
+
+      .pauseIcon::before,
+      .pauseIcon::after {
+        background: currentColor;
+        border-radius: 999px;
+        content: "";
+        height: 13px;
+        width: 4px;
+      }
+
+      .playIcon {
+        border-bottom: 7px solid transparent;
+        border-left: 10px solid currentColor;
+        border-top: 7px solid transparent;
+        height: 0;
+        margin-left: 2px;
+        width: 0;
+      }
+    </style>
+  `;
+  pipDocument.body.innerHTML = `
+    <main class="pipShell" aria-label="Timer Picture-in-Picture">
+      <span class="clockIcon" aria-hidden="true"></span>
+      <strong class="timerValue" id="pip-timer">00:00</strong>
+      <button class="controlButton" id="pip-toggle" type="button">
+        <span class="controlIcon playIcon" id="pip-toggle-icon" aria-hidden="true"></span>
+      </button>
+    </main>
+  `;
+}
+
+function updateDocumentPictureInPictureTimer(
+  pipWindow: Window | null,
+  timerLabel: string,
+  isRunning: boolean,
+  isTimerFinished: boolean,
+) {
+  if (!pipWindow || pipWindow.closed) {
+    return;
+  }
+
+  const pipDocument = pipWindow.document;
+  const timerElement = pipDocument.getElementById('pip-timer');
+  const toggleButton = pipDocument.getElementById('pip-toggle') as HTMLButtonElement | null;
+  const toggleIcon = pipDocument.getElementById('pip-toggle-icon');
+  const toggleLabel = isRunning
+    ? 'Pausar timer'
+    : isTimerFinished
+      ? 'Reiniciar timer'
+      : 'Retomar timer';
+
+  if (timerElement) {
+    timerElement.textContent = timerLabel;
+  }
+
+  if (toggleButton) {
+    toggleButton.setAttribute('aria-label', toggleLabel);
+    toggleButton.title = toggleLabel;
+  }
+
+  if (toggleIcon) {
+    toggleIcon.className = isRunning
+      ? 'controlIcon pauseIcon'
+      : 'controlIcon playIcon';
+  }
 }
 
 export function App() {
   const audioContextRef = useRef<AudioContext | null>(null);
+  const documentPictureInPictureWindowRef = useRef<Window | null>(null);
   const pictureInPictureCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const pictureInPictureVideoRef = useRef<HTMLVideoElement | null>(null);
+  const timerControlRef = useRef({
+    toggle: () => {},
+  });
+  const timerStateRef = useRef({
+    isRunning: false,
+  });
   const [customModes, setCustomModes] = useState<TimerMode[]>(loadCustomModes);
   const [focusSessions, setFocusSessions] = useState<FocusSession[]>(loadFocusSessions);
   const [activeModeId, setActiveModeId] = useState(DEFAULT_TIMER_MODES[0].id);
@@ -309,6 +526,8 @@ export function App() {
     ((activeMode.duration - remainingSeconds) / activeMode.duration) * 100;
   const isTimerFinished = remainingSeconds === 0;
   const timerLabel = formatTime(remainingSeconds);
+  timerStateRef.current = { isRunning };
+
   const primaryActionLabel = isRunning
     ? 'Pausar'
     : remainingSeconds === activeMode.duration
@@ -319,10 +538,14 @@ export function App() {
     : isRunning
       ? 'Sessão em andamento'
       : 'Pronto para focar';
-  const isPictureInPictureSupported =
+  const isDocumentPictureInPictureSupported =
+    typeof getDocumentPictureInPicture()?.requestWindow === 'function';
+  const isVideoPictureInPictureSupported =
     document.pictureInPictureEnabled &&
     'requestPictureInPicture' in HTMLVideoElement.prototype &&
     'captureStream' in HTMLCanvasElement.prototype;
+  const isPictureInPictureSupported =
+    isDocumentPictureInPictureSupported || isVideoPictureInPictureSupported;
 
   const getAudioContext = useCallback(() => {
     audioContextRef.current ??= createAudioContext();
@@ -353,12 +576,77 @@ export function App() {
     playBellSound(audioContext);
   }, [getAudioContext]);
 
+  const closeDocumentPictureInPicture = useCallback(() => {
+    const pipWindow = documentPictureInPictureWindowRef.current;
+
+    if (pipWindow && !pipWindow.closed) {
+      pipWindow.close();
+    }
+
+    documentPictureInPictureWindowRef.current = null;
+    setIsPictureInPictureActive(false);
+  }, []);
+
+  const requestDocumentPictureInPicture = useCallback(async () => {
+    const documentPictureInPicture = getDocumentPictureInPicture();
+    const currentWindow = documentPictureInPictureWindowRef.current;
+
+    if (!isDocumentPictureInPictureSupported || !documentPictureInPicture) {
+      return false;
+    }
+
+    if (currentWindow && !currentWindow.closed) {
+      currentWindow.focus();
+      return true;
+    }
+
+    try {
+      const pipWindow = await documentPictureInPicture.requestWindow({
+        height: PICTURE_IN_PICTURE_HEIGHT + 12,
+        width: PICTURE_IN_PICTURE_WIDTH + 8,
+      });
+      const toggleTimer = () => timerControlRef.current.toggle();
+
+      documentPictureInPictureWindowRef.current = pipWindow;
+      writeDocumentPictureInPictureShell(pipWindow);
+      updateDocumentPictureInPictureTimer(
+        pipWindow,
+        timerLabel,
+        isRunning,
+        isTimerFinished,
+      );
+
+      pipWindow.document
+        .getElementById('pip-toggle')
+        ?.addEventListener('click', toggleTimer);
+      pipWindow.addEventListener(
+        'pagehide',
+        () => {
+          documentPictureInPictureWindowRef.current = null;
+          setIsPictureInPictureActive(false);
+        },
+        { once: true },
+      );
+
+      setIsPictureInPictureActive(true);
+      setPictureInPictureError('');
+
+      return true;
+    } catch {
+      return false;
+    }
+  }, [isDocumentPictureInPictureSupported, isRunning, isTimerFinished, timerLabel]);
+
   const requestPictureInPicture = useCallback(
     async (showError = false) => {
       const canvas = pictureInPictureCanvasRef.current;
       const video = pictureInPictureVideoRef.current;
 
-      if (!canvas || !video || !isPictureInPictureSupported) {
+      if (await requestDocumentPictureInPicture()) {
+        return true;
+      }
+
+      if (!canvas || !video || !isVideoPictureInPictureSupported) {
         if (showError) {
           setPictureInPictureError('Picture-in-Picture não está disponível neste navegador.');
         }
@@ -375,6 +663,11 @@ export function App() {
 
         await video.play();
         await video.requestPictureInPicture();
+
+        if (!timerStateRef.current.isRunning) {
+          video.pause();
+        }
+
         setPictureInPictureError('');
 
         return true;
@@ -386,7 +679,7 @@ export function App() {
         return false;
       }
     },
-    [isPictureInPictureSupported, timerLabel],
+    [isVideoPictureInPictureSupported, requestDocumentPictureInPicture, timerLabel],
   );
 
   useEffect(() => {
@@ -455,7 +748,13 @@ export function App() {
     }
 
     drawPictureInPictureTimer(canvas, timerLabel);
-  }, [timerLabel]);
+    updateDocumentPictureInPictureTimer(
+      documentPictureInPictureWindowRef.current,
+      timerLabel,
+      isRunning,
+      isTimerFinished,
+    );
+  }, [isRunning, isTimerFinished, timerLabel]);
 
   useEffect(() => {
     const video = pictureInPictureVideoRef.current;
@@ -473,14 +772,49 @@ export function App() {
       setIsPictureInPictureActive(false);
     }
 
+    function handleVideoPause() {
+      if (document.pictureInPictureElement !== video || !timerStateRef.current.isRunning) {
+        return;
+      }
+
+      timerControlRef.current.toggle();
+    }
+
+    function handleVideoPlay() {
+      if (document.pictureInPictureElement !== video || timerStateRef.current.isRunning) {
+        return;
+      }
+
+      timerControlRef.current.toggle();
+    }
+
     video.addEventListener('enterpictureinpicture', handleEnterPictureInPicture);
     video.addEventListener('leavepictureinpicture', handleLeavePictureInPicture);
+    video.addEventListener('pause', handleVideoPause);
+    video.addEventListener('play', handleVideoPlay);
 
     return () => {
       video.removeEventListener('enterpictureinpicture', handleEnterPictureInPicture);
       video.removeEventListener('leavepictureinpicture', handleLeavePictureInPicture);
+      video.removeEventListener('pause', handleVideoPause);
+      video.removeEventListener('play', handleVideoPlay);
     };
   }, []);
+
+  useEffect(() => {
+    const video = pictureInPictureVideoRef.current;
+
+    if (!video || document.pictureInPictureElement !== video) {
+      return;
+    }
+
+    if (isRunning) {
+      void video.play();
+      return;
+    }
+
+    video.pause();
+  }, [isRunning]);
 
   useEffect(() => {
     async function handleVisibilityChange() {
@@ -495,6 +829,8 @@ export function App() {
       if (document.pictureInPictureElement) {
         await document.exitPictureInPicture();
       }
+
+      closeDocumentPictureInPicture();
     }
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -502,13 +838,7 @@ export function App() {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [isRunning, requestPictureInPicture]);
-
-  useEffect(() => {
-    if (!isRunning && document.pictureInPictureElement) {
-      void document.exitPictureInPicture();
-    }
-  }, [isRunning]);
+  }, [closeDocumentPictureInPicture, isRunning, requestPictureInPicture]);
 
   function handleModeChange(modeId: string) {
     const nextMode = getModeById(modeId, timerModes);
@@ -540,6 +870,13 @@ export function App() {
 
   async function handlePictureInPictureToggle() {
     try {
+      const documentPipWindow = documentPictureInPictureWindowRef.current;
+
+      if (documentPipWindow && !documentPipWindow.closed) {
+        closeDocumentPictureInPicture();
+        return;
+      }
+
       if (document.pictureInPictureElement) {
         await document.exitPictureInPicture();
         return;
@@ -598,6 +935,8 @@ export function App() {
       setIsRunning(false);
     }
   }
+
+  timerControlRef.current.toggle = handleTimerToggle;
 
   return (
     <main className={styles.pageShell}>
@@ -796,13 +1135,14 @@ export function App() {
       <canvas
         aria-hidden="true"
         className={styles.pictureInPictureMedia}
-        height="120"
+        height={PICTURE_IN_PICTURE_HEIGHT}
         ref={pictureInPictureCanvasRef}
-        width="300"
+        width={PICTURE_IN_PICTURE_WIDTH}
       />
       <video
         aria-hidden="true"
         className={styles.pictureInPictureMedia}
+        controls
         muted
         playsInline
         ref={pictureInPictureVideoRef}
