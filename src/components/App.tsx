@@ -61,6 +61,13 @@ const CODE_EFFECT_LINES = [
 const STUDY_EFFECT_NOTES = ['rev', 'map', 'quiz', 'anki'];
 const READING_EFFECT_LINES = ['linha 01', 'linha 02', 'linha 03', 'linha 04'];
 const REST_EFFECT_BREATHS = ['in', 'out', 'slow'];
+const DAILY_FOCUS_GOAL = 4;
+const MODE_RITUALS: Record<TimerModeEffect, string> = {
+  code: 'Feche abas, abra o editor e defina uma entrega pequena.',
+  reading: 'Deixe uma anotacao pronta e marque uma ideia por bloco.',
+  rest: 'Afaste a tela, respire fundo e solte ombros e mandibula.',
+  study: 'Revise o objetivo, leia ativo e teste sem olhar resposta.',
+};
 
 const DEFAULT_TIMER_MODES: TimerMode[] = [
   {
@@ -122,6 +129,13 @@ function formatSessionDate(isoDate: string) {
     hour: '2-digit',
     minute: '2-digit',
     month: '2-digit',
+  }).format(date);
+}
+
+function formatClockTime(date: Date) {
+  return new Intl.DateTimeFormat('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
   }).format(date);
 }
 
@@ -563,6 +577,13 @@ export function App() {
     ((activeMode.duration - remainingSeconds) / activeMode.duration) * 100;
   const isTimerFinished = remainingSeconds === 0;
   const timerLabel = formatTime(remainingSeconds);
+  const dailyGoalProgress = Math.min(100, (todaysFocuses / DAILY_FOCUS_GOAL) * 100);
+  const activeModeRitual = activeMode.effect
+    ? MODE_RITUALS[activeMode.effect]
+    : 'Escolha uma tarefa pequena e tire notificacoes do caminho.';
+  const estimatedFinishTime = formatClockTime(
+    new Date(Date.now() + remainingSeconds * 1000),
+  );
   timerStateRef.current = { isRunning };
 
   const primaryActionLabel = isRunning
@@ -1150,6 +1171,29 @@ export function App() {
             <dd>{focusedMinutes}</dd>
           </div>
         </dl>
+
+        <section className={styles.focusIdeas} aria-label="Ideias para a sessao">
+          <article className={styles.focusIdeaCard}>
+            <span>Meta de hoje</span>
+            <strong>
+              {todaysFocuses}/{DAILY_FOCUS_GOAL} focos
+            </strong>
+            <div className={styles.focusIdeaProgress} aria-hidden="true">
+              <span style={{ width: `${dailyGoalProgress}%` }} />
+            </div>
+          </article>
+
+          <article className={styles.focusIdeaCard}>
+            <span>Ritual rapido</span>
+            <p>{activeModeRitual}</p>
+          </article>
+
+          <article className={styles.focusIdeaCard}>
+            <span>Termina as</span>
+            <strong>{estimatedFinishTime}</strong>
+            <small>{isRunning ? 'em andamento' : 'se iniciar agora'}</small>
+          </article>
+        </section>
 
         <div className={styles.managementGrid}>
           <section className={styles.panelSection} aria-labelledby="custom-mode-title">

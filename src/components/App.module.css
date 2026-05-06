@@ -690,6 +690,59 @@
   margin: 0;
 }
 
+.focusIdeas {
+  border-top: 1px solid var(--border-color);
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr) minmax(0, 0.7fr);
+  padding-top: var(--space-5);
+}
+
+.focusIdeaCard {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: 0.9rem;
+}
+
+.focusIdeaCard span {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.focusIdeaCard strong {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 850;
+}
+
+.focusIdeaCard p,
+.focusIdeaCard small {
+  color: var(--text-secondary);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.focusIdeaProgress {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.focusIdeaProgress span {
+  background: linear-gradient(90deg, var(--accent), var(--accent-cool));
+  display: block;
+  height: 100%;
+  transition: width 260ms ease;
+}
+
 .managementGrid {
   border-top: 1px solid var(--border-color);
   display: grid;
@@ -885,6 +938,7 @@
   }
 
   .managementGrid,
+  .focusIdeas,
   .customModeForm {
     grid-template-columns: 1fr;
   }
@@ -975,6 +1029,15 @@
     gap: var(--space-3);
   }
 
+  .focusIdeas {
+    gap: var(--space-2);
+    padding-top: var(--space-4);
+  }
+
+  .focusIdeaCard {
+    padding: 0.72rem;
+  }
+
   .sessionStats dt {
     font-size: 0.7rem;
   }
@@ -1024,6 +1087,10 @@
   .secondaryButton,
   .progressTrack span {
     animation: none;
+    transition: none;
+  }
+
+  .focusIdeaProgress span {
     transition: none;
   }
 }
