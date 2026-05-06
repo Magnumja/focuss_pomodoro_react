@@ -53,10 +53,360 @@
   animation: neonPulse 8s ease-in-out infinite alternate;
 }
 
+.pageShellCode::after {
+  background:
+    conic-gradient(
+      from 220deg at 58% 32%,
+      transparent 0deg,
+      rgba(184, 230, 255, 0.2) 34deg,
+      transparent 86deg,
+      rgba(255, 255, 255, 0.08) 132deg,
+      transparent 210deg
+    );
+}
+
+.pageShellStudy::after {
+  background:
+    conic-gradient(
+      from 180deg at 48% 32%,
+      transparent 0deg,
+      rgba(255, 234, 170, 0.18) 42deg,
+      transparent 98deg,
+      rgba(184, 230, 255, 0.1) 156deg,
+      transparent 250deg
+    );
+}
+
+.pageShellReading::after {
+  background:
+    conic-gradient(
+      from 250deg at 50% 34%,
+      transparent 0deg,
+      rgba(245, 245, 245, 0.16) 40deg,
+      transparent 96deg,
+      rgba(184, 230, 255, 0.08) 182deg,
+      transparent 292deg
+    );
+}
+
+.pageShellRest::after {
+  background:
+    conic-gradient(
+      from 200deg at 48% 36%,
+      transparent 0deg,
+      rgba(126, 229, 179, 0.16) 46deg,
+      transparent 110deg,
+      rgba(245, 245, 245, 0.08) 176deg,
+      transparent 280deg
+    );
+}
+
 .hero {
   padding-top: var(--space-4);
   position: relative;
   z-index: 1;
+}
+
+.ambientEffect {
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  z-index: 0;
+}
+
+.codeEffect,
+.studyEffect,
+.readingEffect,
+.restEffect {
+  position: absolute;
+  right: clamp(0.75rem, 4vw, 4rem);
+  top: clamp(6rem, 18vh, 12rem);
+}
+
+.codeEffect {
+  color: rgba(184, 230, 255, 0.5);
+  display: grid;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: clamp(0.76rem, 1.6vw, 1rem);
+  gap: 0.55rem;
+  max-width: 280px;
+  opacity: 0.72;
+  transform: rotate(-2deg);
+}
+
+.codeEffect span {
+  animation: codeDrift 8s linear infinite;
+  background: rgba(5, 5, 5, 0.24);
+  border: 1px solid rgba(184, 230, 255, 0.1);
+  border-radius: 6px;
+  padding: 0.38rem 0.55rem;
+  white-space: nowrap;
+}
+
+.codeEffect span:nth-child(2) {
+  animation-delay: -2s;
+  margin-left: 1.5rem;
+}
+
+.codeEffect span:nth-child(3) {
+  animation-delay: -4s;
+}
+
+.codeEffect span:nth-child(4) {
+  animation-delay: -6s;
+  margin-left: 2.25rem;
+}
+
+.studyEffect {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(2, 54px);
+  opacity: 0.52;
+  transform: rotate(3deg);
+}
+
+.studyEffect span {
+  align-items: center;
+  animation: noteFloat 5.5s ease-in-out infinite;
+  background: rgba(255, 234, 170, 0.12);
+  border: 1px solid rgba(255, 234, 170, 0.24);
+  border-radius: 7px;
+  color: rgba(255, 234, 170, 0.72);
+  display: inline-flex;
+  font-size: 0.74rem;
+  font-weight: 850;
+  height: 44px;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+.studyEffect span:nth-child(2),
+.studyEffect span:nth-child(3) {
+  animation-delay: -2.5s;
+}
+
+.readingEffect {
+  background:
+    linear-gradient(90deg, transparent 49%, rgba(245, 245, 245, 0.12) 49.5%, transparent 50.5%),
+    rgba(245, 245, 245, 0.045);
+  border: 1px solid rgba(245, 245, 245, 0.09);
+  border-radius: 8px;
+  display: grid;
+  gap: 0.55rem;
+  opacity: 0.5;
+  padding: 1rem;
+  width: 190px;
+}
+
+.readingEffect span {
+  animation: readingSweep 4.8s ease-in-out infinite;
+  background: rgba(245, 245, 245, 0.18);
+  border-radius: 999px;
+  height: 6px;
+}
+
+.readingEffect span:nth-child(2) {
+  width: 82%;
+}
+
+.readingEffect span:nth-child(3) {
+  animation-delay: -2.2s;
+  width: 92%;
+}
+
+.readingEffect span:nth-child(4) {
+  width: 68%;
+}
+
+.restEffect {
+  align-items: center;
+  display: grid;
+  height: 170px;
+  justify-items: center;
+  opacity: 0.48;
+  width: 170px;
+}
+
+.restEffect span {
+  animation: restBreath 6s ease-in-out infinite;
+  border: 1px solid rgba(126, 229, 179, 0.28);
+  border-radius: 50%;
+  grid-area: 1 / 1;
+  height: 66px;
+  width: 66px;
+}
+
+.restEffect span:nth-child(2) {
+  animation-delay: -2s;
+}
+
+.restEffect span:nth-child(3) {
+  animation-delay: -4s;
+}
+
+.presetWidgets {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  position: relative;
+  width: min(100%, 820px);
+  z-index: 1;
+}
+
+.presetWidget {
+  align-items: center;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0)),
+    rgba(17, 17, 17, 0.78);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: 34px minmax(0, 1fr);
+  min-height: 78px;
+  overflow: hidden;
+  padding: 0.85rem;
+  position: relative;
+  text-align: left;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.presetWidget::after {
+  content: '';
+  inset: auto 0 0;
+  height: 3px;
+  opacity: 0.72;
+  position: absolute;
+}
+
+.presetWidget:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.presetWidgetActive {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0)),
+    var(--bg-elevated);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.presetWidgetIcon {
+  border: 1px solid currentColor;
+  border-radius: 7px;
+  color: inherit;
+  display: block;
+  height: 34px;
+  opacity: 0.88;
+  position: relative;
+  width: 34px;
+}
+
+.presetWidgetText {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.presetWidgetText strong {
+  color: inherit;
+  font-size: 0.98rem;
+  font-weight: 850;
+}
+
+.presetWidgetText small {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.presetWidgetCode::after {
+  background: #b8e6ff;
+}
+
+.presetWidgetCode .presetWidgetIcon::before,
+.presetWidgetCode .presetWidgetIcon::after {
+  color: #b8e6ff;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: 0.92rem;
+  font-weight: 900;
+  position: absolute;
+  top: 7px;
+}
+
+.presetWidgetCode .presetWidgetIcon::before {
+  content: '<';
+  left: 8px;
+}
+
+.presetWidgetCode .presetWidgetIcon::after {
+  content: '/>';
+  right: 5px;
+}
+
+.presetWidgetStudy::after {
+  background: #ffeaaa;
+}
+
+.presetWidgetStudy .presetWidgetIcon::before,
+.presetWidgetStudy .presetWidgetIcon::after {
+  background: #ffeaaa;
+  border-radius: 999px;
+  content: '';
+  left: 8px;
+  position: absolute;
+  right: 8px;
+}
+
+.presetWidgetStudy .presetWidgetIcon::before {
+  height: 3px;
+  top: 10px;
+}
+
+.presetWidgetStudy .presetWidgetIcon::after {
+  height: 3px;
+  top: 19px;
+}
+
+.presetWidgetReading::after {
+  background: #f5f5f5;
+}
+
+.presetWidgetReading .presetWidgetIcon::before {
+  border-left: 2px solid #f5f5f5;
+  border-radius: 4px;
+  box-shadow: 9px 0 0 rgba(245, 245, 245, 0.55);
+  content: '';
+  height: 20px;
+  left: 10px;
+  position: absolute;
+  top: 6px;
+  width: 12px;
+}
+
+.presetWidgetRest::after {
+  background: #7ee5b3;
+}
+
+.presetWidgetRest .presetWidgetIcon::before {
+  border: 2px solid #7ee5b3;
+  border-left-color: transparent;
+  border-radius: 50%;
+  content: '';
+  height: 18px;
+  left: 7px;
+  position: absolute;
+  top: 7px;
+  width: 18px;
 }
 
 .timerCard {
@@ -124,6 +474,7 @@
 
 .modeButton:focus-visible,
 .removeModeButton:focus-visible,
+.presetWidget:focus-visible,
 .pictureInPictureButton:focus-visible,
 .primaryButton:focus-visible,
 .secondaryButton:focus-visible,
@@ -519,25 +870,71 @@
 
 @media (max-width: 680px) {
   .pageShell {
-    gap: var(--space-6);
-    padding: var(--space-6) var(--space-3);
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .hero {
+    padding-top: 0;
   }
 
   .timerCard {
-    gap: var(--space-5);
+    border-radius: var(--radius-md);
+    gap: var(--space-4);
+    padding: 1rem;
   }
 
-  .modeSwitcher,
-  .actions,
-  .sessionStats,
   .managementGrid,
   .customModeForm {
     grid-template-columns: 1fr;
   }
 
+  .presetWidgets,
+  .modeSwitcher,
+  .actions,
+  .sessionStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ambientEffect {
+    opacity: 0.34;
+  }
+
+  .codeEffect,
+  .studyEffect,
+  .readingEffect,
+  .restEffect {
+    right: -3rem;
+    top: 5.75rem;
+    transform: scale(0.68);
+  }
+
+  .presetWidget {
+    gap: var(--space-2);
+    grid-template-columns: 28px minmax(0, 1fr);
+    min-height: 58px;
+    padding: 0.62rem;
+  }
+
+  .presetWidgetIcon {
+    border-radius: 6px;
+    height: 28px;
+    width: 28px;
+  }
+
+  .presetWidgetText strong {
+    font-size: 0.88rem;
+  }
+
+  .presetWidgetText small {
+    font-size: 0.72rem;
+  }
+
   .modeSwitcher {
+    gap: var(--space-2);
     padding-right: 0;
-    padding-top: var(--space-5);
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-4);
   }
 
   .pictureInPictureButton {
@@ -551,18 +948,78 @@
   }
 
   .modeButton {
-    min-height: 68px;
+    min-height: 58px;
+    padding: 0.7rem;
     text-align: center;
   }
 
+  .modeButton span {
+    font-size: 0.88rem;
+  }
+
+  .modeButton small {
+    font-size: 0.72rem;
+  }
+
+  .actions {
+    padding-bottom: var(--space-4);
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    min-height: 48px;
+    padding: 0.72rem;
+  }
+
+  .sessionStats {
+    gap: var(--space-3);
+  }
+
+  .sessionStats dt {
+    font-size: 0.7rem;
+  }
+
+  .sessionStats dd {
+    font-size: 0.92rem;
+  }
+
   .timerValue {
-    font-size: clamp(4.4rem, 23vw, 6.4rem);
+    font-size: clamp(3.6rem, 21vw, 5.8rem);
+  }
+}
+
+@media (max-width: 420px) {
+  .pageShell {
+    padding-inline: var(--space-2);
+  }
+
+  .presetWidgets,
+  .modeSwitcher {
+    grid-template-columns: 1fr;
+  }
+
+  .actions,
+  .sessionStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ambientEffect {
+    display: none;
+  }
+
+  .githubLink {
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .pageShell::after,
+  .codeEffect span,
+  .studyEffect span,
+  .readingEffect span,
+  .restEffect span,
   .modeButton,
+  .presetWidget,
   .primaryButton,
   .secondaryButton,
   .progressTrack span {
@@ -580,5 +1037,63 @@
   to {
     opacity: 0.46;
     transform: scale(1.1) rotate(1deg);
+  }
+}
+
+@keyframes codeDrift {
+  0% {
+    opacity: 0;
+    transform: translateX(34px);
+  }
+
+  18%,
+  72% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-42px);
+  }
+}
+
+@keyframes noteFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+@keyframes readingSweep {
+  0%,
+  100% {
+    opacity: 0.34;
+    transform: scaleX(0.82);
+    transform-origin: left center;
+  }
+
+  50% {
+    opacity: 0.82;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes restBreath {
+  0% {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+
+  28% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.75);
   }
 }

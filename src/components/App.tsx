@@ -11,6 +11,7 @@ import { Heading } from './Heading';
 import styles from './App.module.css';
 
 type TimerModeCategory = 'focus' | 'break';
+type TimerModeEffect = 'code' | 'study' | 'reading' | 'rest';
 
 type TimerMode = {
   id: string;
@@ -18,6 +19,7 @@ type TimerMode = {
   duration: number;
   description: string;
   category: TimerModeCategory;
+  effect?: TimerModeEffect;
   isCustom?: boolean;
 };
 
@@ -50,28 +52,48 @@ const MAX_CUSTOM_MODE_MINUTES = 180;
 const MAX_STORED_FOCUS_SESSIONS = 200;
 const PICTURE_IN_PICTURE_WIDTH = 184;
 const PICTURE_IN_PICTURE_HEIGHT = 72;
+const CODE_EFFECT_LINES = [
+  'const flow = focus.start();',
+  'while (deepWork) commit();',
+  'timer.tick(() => ship());',
+  'await idea.compile();',
+];
+const STUDY_EFFECT_NOTES = ['rev', 'map', 'quiz', 'anki'];
+const READING_EFFECT_LINES = ['linha 01', 'linha 02', 'linha 03', 'linha 04'];
+const REST_EFFECT_BREATHS = ['in', 'out', 'slow'];
 
 const DEFAULT_TIMER_MODES: TimerMode[] = [
   {
-    id: 'pomodoro',
-    label: 'Pomodoro',
-    duration: 25 * MINUTE_IN_SECONDS,
-    description: 'Foco profundo',
+    id: 'code',
+    label: 'Code',
+    duration: 45 * MINUTE_IN_SECONDS,
+    description: 'Fluxo de codigo',
     category: 'focus',
+    effect: 'code',
   },
   {
-    id: 'shortBreak',
-    label: 'Pausa curta',
-    duration: 5 * MINUTE_IN_SECONDS,
-    description: 'Recuperação rápida',
-    category: 'break',
+    id: 'study',
+    label: 'Estudos',
+    duration: 35 * MINUTE_IN_SECONDS,
+    description: 'Revisao ativa',
+    category: 'focus',
+    effect: 'study',
   },
   {
-    id: 'longBreak',
-    label: 'Pausa longa',
+    id: 'reading',
+    label: 'Leitura',
+    duration: 40 * MINUTE_IN_SECONDS,
+    description: 'Leitura profunda',
+    category: 'focus',
+    effect: 'reading',
+  },
+  {
+    id: 'rest',
+    label: 'Descanso',
     duration: 15 * MINUTE_IN_SECONDS,
-    description: 'Recarregar energia',
+    description: 'Recuperar energia',
     category: 'break',
+    effect: 'rest',
   },
 ];
 
@@ -508,6 +530,21 @@ export function App() {
     [customModes],
   );
   const activeMode = getModeById(activeModeId, timerModes);
+  const presetEffectClassNames: Record<TimerModeEffect, string> = {
+    code: styles.pageShellCode,
+    reading: styles.pageShellReading,
+    rest: styles.pageShellRest,
+    study: styles.pageShellStudy,
+  };
+  const presetWidgetClassNames: Record<TimerModeEffect, string> = {
+    code: styles.presetWidgetCode,
+    reading: styles.presetWidgetReading,
+    rest: styles.presetWidgetRest,
+    study: styles.presetWidgetStudy,
+  };
+  const activeEffectClassName = activeMode.effect
+    ? presetEffectClassNames[activeMode.effect]
+    : '';
   const completedFocuses = focusSessions.length;
   const todaysFocuses = useMemo(
     () => focusSessions.filter((session) => isSameLocalDay(session.completedAt)).length,
@@ -939,12 +976,73 @@ export function App() {
   timerControlRef.current.toggle = handleTimerToggle;
 
   return (
-    <main className={styles.pageShell}>
+    <main className={`${styles.pageShell} ${activeEffectClassName}`}>
+      <div className={styles.ambientEffect} aria-hidden="true">
+        {activeMode.effect === 'code' ? (
+          <div className={styles.codeEffect}>
+            {CODE_EFFECT_LINES.map((line) => (
+              <span key={line}>{line}</span>
+            ))}
+          </div>
+        ) : null}
+
+        {activeMode.effect === 'study' ? (
+          <div className={styles.studyEffect}>
+            {STUDY_EFFECT_NOTES.map((note) => (
+              <span key={note}>{note}</span>
+            ))}
+          </div>
+        ) : null}
+
+        {activeMode.effect === 'reading' ? (
+          <div className={styles.readingEffect}>
+            {READING_EFFECT_LINES.map((line) => (
+              <span key={line} />
+            ))}
+          </div>
+        ) : null}
+
+        {activeMode.effect === 'rest' ? (
+          <div className={styles.restEffect}>
+            {REST_EFFECT_BREATHS.map((breath) => (
+              <span key={breath} />
+            ))}
+          </div>
+        ) : null}
+      </div>
+
       <section className={styles.hero} aria-labelledby="app-title">
         <Heading
           subtitle="Foco, pausas e ritmo em uma interface limpa."
           title="Focuss Pomodoro"
         />
+      </section>
+
+      <section className={styles.presetWidgets} aria-label="Presets base">
+        {DEFAULT_TIMER_MODES.map((mode) => {
+          const isActive = mode.id === activeModeId;
+          const effectClassName = mode.effect
+            ? presetWidgetClassNames[mode.effect]
+            : '';
+
+          return (
+            <button
+              aria-pressed={isActive}
+              className={`${styles.presetWidget} ${effectClassName} ${
+                isActive ? styles.presetWidgetActive : ''
+              }`}
+              key={mode.id}
+              onClick={() => handleModeChange(mode.id)}
+              type="button"
+            >
+              <span className={styles.presetWidgetIcon} aria-hidden="true" />
+              <span className={styles.presetWidgetText}>
+                <strong>{mode.label}</strong>
+                <small>{Math.round(mode.duration / MINUTE_IN_SECONDS)} min</small>
+              </span>
+            </button>
+          );
+        })}
       </section>
 
       <section className={styles.timerCard} aria-label="Timer Pomodoro">
