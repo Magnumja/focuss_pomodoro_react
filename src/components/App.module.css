@@ -1,5 +1,6 @@
 .pageShell {
   align-items: center;
+  contain: layout paint;
   display: grid;
   gap: var(--space-8);
   justify-items: center;
@@ -12,10 +13,13 @@
 
 .pageShell::before,
 .pageShell::after {
+  contain: paint;
   content: '';
   inset: 0;
   pointer-events: none;
   position: fixed;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
   z-index: -1;
 }
 
@@ -29,7 +33,6 @@
       rgba(184, 230, 255, 0.07) 66px,
       transparent 68px
     );
-  filter: blur(0.2px);
   mask-image: linear-gradient(180deg, transparent, #000 12%, #000 78%, transparent);
   opacity: 0.52;
   transform: translate3d(0, 0, 0);
@@ -47,10 +50,9 @@
       rgba(184, 230, 255, 0.11) 228deg,
       transparent 292deg
     );
-  filter: blur(34px);
-  opacity: 0.38;
+  filter: blur(18px);
+  opacity: 0.28;
   transform: scale(1.08);
-  animation: neonPulse 8s ease-in-out infinite alternate;
 }
 
 .pageShellCode::after {
@@ -108,10 +110,12 @@
 }
 
 .ambientEffect {
+  contain: layout paint style;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
   position: fixed;
+  transform: translate3d(0, 0, 0);
   z-index: 0;
 }
 
@@ -142,6 +146,7 @@
   border-radius: 6px;
   padding: 0.38rem 0.55rem;
   white-space: nowrap;
+  will-change: transform, opacity;
 }
 
 .codeEffect span:nth-child(2) {
@@ -179,6 +184,7 @@
   height: 44px;
   justify-content: center;
   text-transform: uppercase;
+  will-change: transform;
 }
 
 .studyEffect span:nth-child(2),
@@ -204,6 +210,7 @@
   background: rgba(245, 245, 245, 0.18);
   border-radius: 999px;
   height: 6px;
+  will-change: transform, opacity;
 }
 
 .readingEffect span:nth-child(2) {
@@ -234,6 +241,7 @@
   border-radius: 50%;
   grid-area: 1 / 1;
   height: 66px;
+  will-change: transform, opacity;
   width: 66px;
 }
 
@@ -445,6 +453,7 @@
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
+  contain: layout paint style;
   display: grid;
   gap: var(--space-7);
   overflow: hidden;
@@ -1021,16 +1030,24 @@
   }
 
   .ambientEffect {
-    opacity: 0.34;
+    opacity: 0.22;
   }
 
   .codeEffect,
   .studyEffect,
   .readingEffect,
   .restEffect {
+    animation: none;
     right: -3rem;
     top: 5.75rem;
     transform: scale(0.68);
+  }
+
+  .codeEffect span,
+  .studyEffect span,
+  .readingEffect span,
+  .restEffect span {
+    animation: none;
   }
 
   .presetWidget {
