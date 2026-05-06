@@ -248,7 +248,7 @@
 .presetWidgets {
   display: grid;
   gap: var(--space-3);
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
   position: relative;
   width: min(100%, 820px);
   z-index: 1;
@@ -301,14 +301,21 @@
 }
 
 .presetWidgetIcon {
+  align-items: center;
   border: 1px solid currentColor;
   border-radius: 7px;
   color: inherit;
-  display: block;
+  display: grid;
   height: 34px;
+  justify-items: center;
   opacity: 0.88;
   position: relative;
   width: 34px;
+}
+
+.presetWidgetIcon::before,
+.presetWidgetIcon::after {
+  box-sizing: border-box;
 }
 
 .presetWidgetText {
@@ -335,22 +342,23 @@
 
 .presetWidgetCode .presetWidgetIcon::before,
 .presetWidgetCode .presetWidgetIcon::after {
-  color: #b8e6ff;
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
-  font-size: 0.92rem;
-  font-weight: 900;
+  border-bottom: 2px solid #b8e6ff;
+  border-left: 2px solid #b8e6ff;
+  content: '';
+  height: 9px;
   position: absolute;
-  top: 7px;
+  top: 11px;
+  width: 9px;
 }
 
 .presetWidgetCode .presetWidgetIcon::before {
-  content: '<';
   left: 8px;
+  transform: rotate(45deg);
 }
 
 .presetWidgetCode .presetWidgetIcon::after {
-  content: '/>';
-  right: 5px;
+  right: 8px;
+  transform: rotate(225deg);
 }
 
 .presetWidgetStudy::after {
@@ -359,22 +367,27 @@
 
 .presetWidgetStudy .presetWidgetIcon::before,
 .presetWidgetStudy .presetWidgetIcon::after {
-  background: #ffeaaa;
-  border-radius: 999px;
   content: '';
-  left: 8px;
   position: absolute;
-  right: 8px;
 }
 
 .presetWidgetStudy .presetWidgetIcon::before {
-  height: 3px;
-  top: 10px;
+  border: 2px solid #ffeaaa;
+  border-radius: 5px;
+  height: 18px;
+  left: 9px;
+  top: 7px;
+  width: 15px;
 }
 
 .presetWidgetStudy .presetWidgetIcon::after {
-  height: 3px;
-  top: 19px;
+  background:
+    linear-gradient(#ffeaaa 0 0) 0 0 / 100% 2px no-repeat,
+    linear-gradient(#ffeaaa 0 0) 0 6px / 80% 2px no-repeat;
+  height: 10px;
+  left: 13px;
+  top: 13px;
+  width: 8px;
 }
 
 .presetWidgetReading::after {
@@ -382,15 +395,20 @@
 }
 
 .presetWidgetReading .presetWidgetIcon::before {
-  border-left: 2px solid #f5f5f5;
-  border-radius: 4px;
-  box-shadow: 9px 0 0 rgba(245, 245, 245, 0.55);
+  background:
+    linear-gradient(90deg, transparent 48%, #070707 48% 52%, transparent 52%),
+    linear-gradient(#f5f5f5 0 0) 7px 7px / 7px 2px no-repeat,
+    linear-gradient(rgba(245, 245, 245, 0.7) 0 0) 19px 7px / 6px 2px no-repeat,
+    linear-gradient(rgba(245, 245, 245, 0.55) 0 0) 7px 12px / 7px 2px no-repeat,
+    linear-gradient(rgba(245, 245, 245, 0.45) 0 0) 19px 12px / 5px 2px no-repeat;
+  border: 2px solid #f5f5f5;
+  border-radius: 5px;
   content: '';
   height: 20px;
-  left: 10px;
+  left: 6px;
   position: absolute;
   top: 6px;
-  width: 12px;
+  width: 22px;
 }
 
 .presetWidgetRest::after {
@@ -407,6 +425,17 @@
   position: absolute;
   top: 7px;
   width: 18px;
+}
+
+.presetWidgetRest .presetWidgetIcon::after {
+  background: #7ee5b3;
+  border-radius: 999px;
+  content: '';
+  height: 2px;
+  left: 16px;
+  position: absolute;
+  top: 5px;
+  width: 5px;
 }
 
 .timerCard {
@@ -475,6 +504,7 @@
 .modeButton:focus-visible,
 .removeModeButton:focus-visible,
 .presetWidget:focus-visible,
+.pictureInPicturePermission button:focus-visible,
 .pictureInPictureButton:focus-visible,
 .primaryButton:focus-visible,
 .secondaryButton:focus-visible,
@@ -661,6 +691,46 @@
   font-weight: 700;
   margin: calc(var(--space-5) * -1) 0 0;
   text-align: center;
+}
+
+.pictureInPicturePermission {
+  align-items: center;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  display: flex;
+  gap: var(--space-3);
+  justify-content: space-between;
+  padding: 0.68rem 0.78rem;
+}
+
+.pictureInPicturePermission span {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.pictureInPicturePermission button {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  color: var(--bg-primary);
+  cursor: pointer;
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  font-weight: 900;
+  min-height: 34px;
+  padding: 0 0.72rem;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.pictureInPicturePermission button:hover {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  transform: translateY(-1px);
 }
 
 .sessionStats {
@@ -965,15 +1035,17 @@
 
   .presetWidget {
     gap: var(--space-2);
-    grid-template-columns: 28px minmax(0, 1fr);
+    grid-template-columns: 30px minmax(0, 1fr);
     min-height: 58px;
     padding: 0.62rem;
   }
 
   .presetWidgetIcon {
     border-radius: 6px;
-    height: 28px;
-    width: 28px;
+    height: 30px;
+    transform: scale(0.9);
+    transform-origin: center;
+    width: 30px;
   }
 
   .presetWidgetText strong {
@@ -1023,6 +1095,16 @@
   .secondaryButton {
     min-height: 48px;
     padding: 0.72rem;
+  }
+
+  .pictureInPicturePermission {
+    align-items: stretch;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .pictureInPicturePermission button {
+    width: 100%;
   }
 
   .sessionStats {

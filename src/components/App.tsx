@@ -48,10 +48,17 @@ type WindowWithDocumentPictureInPicture = Window & {
 const MINUTE_IN_SECONDS = 60;
 const CUSTOM_MODES_STORAGE_KEY = 'focuss-pomodoro:custom-modes';
 const FOCUS_SESSIONS_STORAGE_KEY = 'focuss-pomodoro:focus-sessions';
+const PICTURE_IN_PICTURE_PERMISSION_STORAGE_KEY =
+  'focuss-pomodoro:picture-in-picture-permission';
 const MAX_CUSTOM_MODE_MINUTES = 180;
 const MAX_STORED_FOCUS_SESSIONS = 200;
-const PICTURE_IN_PICTURE_WIDTH = 184;
-const PICTURE_IN_PICTURE_HEIGHT = 72;
+const PICTURE_IN_PICTURE_WIDTH = 142;
+const PICTURE_IN_PICTURE_HEIGHT = 48;
+const PICTURE_IN_PICTURE_SCALE = 3;
+const PICTURE_IN_PICTURE_CANVAS_WIDTH =
+  PICTURE_IN_PICTURE_WIDTH * PICTURE_IN_PICTURE_SCALE;
+const PICTURE_IN_PICTURE_CANVAS_HEIGHT =
+  PICTURE_IN_PICTURE_HEIGHT * PICTURE_IN_PICTURE_SCALE;
 const CODE_EFFECT_LINES = [
   'const flow = focus.start();',
   'while (deepWork) commit();',
@@ -254,6 +261,17 @@ function loadFocusSessions() {
   }
 }
 
+function loadPictureInPicturePermission() {
+  try {
+    return (
+      window.localStorage.getItem(PICTURE_IN_PICTURE_PERMISSION_STORAGE_KEY) ===
+      'granted'
+    );
+  } catch {
+    return false;
+  }
+}
+
 function saveToStorage(key: string, value: unknown) {
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
@@ -307,33 +325,39 @@ function drawPictureInPictureTimer(
     return;
   }
 
-  const { height, width } = canvas;
-  const iconCenterX = 30;
+  const scale = PICTURE_IN_PICTURE_SCALE;
+  const width = PICTURE_IN_PICTURE_WIDTH;
+  const height = PICTURE_IN_PICTURE_HEIGHT;
+  const iconCenterX = 22;
   const iconCenterY = height / 2;
 
+  context.setTransform(scale, 0, 0, scale, 0, 0);
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = 'high';
   context.clearRect(0, 0, width, height);
   context.fillStyle = '#070707';
   context.fillRect(0, 0, width, height);
 
   context.strokeStyle = '#b8e6ff';
   context.lineCap = 'round';
-  context.lineWidth = 3;
+  context.lineWidth = 2.2;
   context.beginPath();
-  context.arc(iconCenterX, iconCenterY, 13, 0, Math.PI * 2);
+  context.arc(iconCenterX, iconCenterY, 10, 0, Math.PI * 2);
   context.stroke();
 
   context.beginPath();
   context.moveTo(iconCenterX, iconCenterY);
-  context.lineTo(iconCenterX, iconCenterY - 7);
+  context.lineTo(iconCenterX, iconCenterY - 5);
   context.moveTo(iconCenterX, iconCenterY);
-  context.lineTo(iconCenterX + 6, iconCenterY + 4);
+  context.lineTo(iconCenterX + 5, iconCenterY + 3);
   context.stroke();
 
   context.fillStyle = '#f5f5f5';
-  context.font = '850 36px Inter, system-ui, sans-serif';
+  context.font = '850 27px Inter, system-ui, sans-serif';
   context.textAlign = 'left';
   context.textBaseline = 'middle';
-  context.fillText(timerLabel, 56, iconCenterY + 1);
+  context.fillText(timerLabel, 42, iconCenterY + 1);
+  context.setTransform(1, 0, 0, 1, 0, 0);
 }
 
 function getDocumentPictureInPicture() {
@@ -366,9 +390,9 @@ function writeDocumentPictureInPictureShell(pipWindow: Window) {
         background: #070707;
         box-sizing: border-box;
         display: flex;
-        gap: 10px;
+        gap: 7px;
         height: 100vh;
-        padding: 9px 10px;
+        padding: 6px 7px;
         width: 100vw;
       }
 
@@ -377,10 +401,10 @@ function writeDocumentPictureInPictureShell(pipWindow: Window) {
         border-radius: 50%;
         box-sizing: border-box;
         flex: 0 0 auto;
-        height: 20px;
+        height: 17px;
         opacity: 0.92;
         position: relative;
-        width: 20px;
+        width: 17px;
       }
 
       .clockIcon::before,
@@ -388,26 +412,26 @@ function writeDocumentPictureInPictureShell(pipWindow: Window) {
         background: #b8e6ff;
         border-radius: 999px;
         content: "";
-        left: 8px;
+        left: 6.5px;
         position: absolute;
-        top: 4px;
+        top: 3px;
         transform-origin: bottom center;
         width: 2px;
       }
 
       .clockIcon::before {
-        height: 7px;
+        height: 6px;
       }
 
       .clockIcon::after {
-        height: 6px;
+        height: 5px;
         transform: rotate(120deg);
       }
 
       .timerValue {
         color: #f5f5f5;
         flex: 1 1 auto;
-        font-size: 30px;
+        font-size: 24px;
         font-variant-numeric: tabular-nums;
         font-weight: 850;
         letter-spacing: 0;
@@ -420,16 +444,16 @@ function writeDocumentPictureInPictureShell(pipWindow: Window) {
         align-items: center;
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid rgba(255, 255, 255, 0.16);
-        border-radius: 7px;
+        border-radius: 6px;
         color: #f5f5f5;
         cursor: pointer;
         display: inline-flex;
         flex: 0 0 auto;
-        height: 30px;
+        height: 24px;
         justify-content: center;
         padding: 0;
         transition: background-color 140ms ease, border-color 140ms ease;
-        width: 30px;
+        width: 24px;
       }
 
       .controlButton:hover,
@@ -445,7 +469,7 @@ function writeDocumentPictureInPictureShell(pipWindow: Window) {
       }
 
       .pauseIcon {
-        gap: 4px;
+        gap: 3px;
       }
 
       .pauseIcon::before,
@@ -453,14 +477,14 @@ function writeDocumentPictureInPictureShell(pipWindow: Window) {
         background: currentColor;
         border-radius: 999px;
         content: "";
-        height: 13px;
-        width: 4px;
+        height: 10px;
+        width: 3px;
       }
 
       .playIcon {
-        border-bottom: 7px solid transparent;
-        border-left: 10px solid currentColor;
-        border-top: 7px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-left: 8px solid currentColor;
+        border-top: 6px solid transparent;
         height: 0;
         margin-left: 2px;
         width: 0;
@@ -536,6 +560,9 @@ export function App() {
   const [customModeMinutes, setCustomModeMinutes] = useState('30');
   const [customModeDescription, setCustomModeDescription] = useState('');
   const [customModeError, setCustomModeError] = useState('');
+  const [hasPictureInPicturePermission, setHasPictureInPicturePermission] = useState(
+    loadPictureInPicturePermission,
+  );
   const [isPictureInPictureActive, setIsPictureInPictureActive] = useState(false);
   const [pictureInPictureError, setPictureInPictureError] = useState('');
 
@@ -604,6 +631,11 @@ export function App() {
     'captureStream' in HTMLCanvasElement.prototype;
   const isPictureInPictureSupported =
     isDocumentPictureInPictureSupported || isVideoPictureInPictureSupported;
+  const pictureInPictureButtonLabel = !hasPictureInPicturePermission
+    ? 'Permitir Picture-in-Picture'
+    : isPictureInPictureActive
+      ? 'Fechar Picture-in-Picture'
+      : 'Abrir Picture-in-Picture';
 
   const getAudioContext = useCallback(() => {
     audioContextRef.current ??= createAudioContext();
@@ -660,8 +692,8 @@ export function App() {
 
     try {
       const pipWindow = await documentPictureInPicture.requestWindow({
-        height: PICTURE_IN_PICTURE_HEIGHT + 12,
-        width: PICTURE_IN_PICTURE_WIDTH + 8,
+        height: PICTURE_IN_PICTURE_HEIGHT,
+        width: PICTURE_IN_PICTURE_WIDTH,
       });
       const toggleTimer = () => timerControlRef.current.toggle();
 
@@ -747,6 +779,19 @@ export function App() {
   useEffect(() => {
     saveToStorage(FOCUS_SESSIONS_STORAGE_KEY, focusSessions);
   }, [focusSessions]);
+
+  useEffect(() => {
+    if (hasPictureInPicturePermission) {
+      try {
+        window.localStorage.setItem(
+          PICTURE_IN_PICTURE_PERMISSION_STORAGE_KEY,
+          'granted',
+        );
+      } catch {
+        // Permission can still work for the current session without localStorage.
+      }
+    }
+  }, [hasPictureInPicturePermission]);
 
   useEffect(() => {
     if (!isRunning) {
@@ -877,7 +922,11 @@ export function App() {
   useEffect(() => {
     async function handleVisibilityChange() {
       if (document.visibilityState === 'hidden') {
-        if (isRunning && !document.pictureInPictureElement) {
+        if (
+          isRunning &&
+          hasPictureInPicturePermission &&
+          !document.pictureInPictureElement
+        ) {
           await requestPictureInPicture();
         }
 
@@ -896,7 +945,12 @@ export function App() {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [closeDocumentPictureInPicture, isRunning, requestPictureInPicture]);
+  }, [
+    closeDocumentPictureInPicture,
+    hasPictureInPicturePermission,
+    isRunning,
+    requestPictureInPicture,
+  ]);
 
   function handleModeChange(modeId: string) {
     const nextMode = getModeById(modeId, timerModes);
@@ -926,8 +980,26 @@ export function App() {
     setIsRunning(false);
   }
 
+  async function handlePictureInPicturePermission() {
+    if (!isPictureInPictureSupported) {
+      setPictureInPictureError('Picture-in-Picture não está disponível neste navegador.');
+      return;
+    }
+
+    const wasOpened = await requestPictureInPicture(true);
+
+    if (wasOpened) {
+      setHasPictureInPicturePermission(true);
+    }
+  }
+
   async function handlePictureInPictureToggle() {
     try {
+      if (!hasPictureInPicturePermission) {
+        await handlePictureInPicturePermission();
+        return;
+      }
+
       const documentPipWindow = documentPictureInPictureWindowRef.current;
 
       if (documentPipWindow && !documentPipWindow.closed) {
@@ -1068,22 +1140,14 @@ export function App() {
 
       <section className={styles.timerCard} aria-label="Timer Pomodoro">
         <button
-          aria-label={
-            isPictureInPictureActive
-              ? 'Fechar Picture-in-Picture'
-              : 'Abrir Picture-in-Picture'
-          }
+          aria-label={pictureInPictureButtonLabel}
           className={styles.pictureInPictureButton}
           disabled={!isPictureInPictureSupported}
           onClick={handlePictureInPictureToggle}
-          title={
-            isPictureInPictureActive
-              ? 'Fechar Picture-in-Picture'
-              : 'Abrir Picture-in-Picture'
-          }
+          title={pictureInPictureButtonLabel}
           type="button"
         >
-          PiP
+          {hasPictureInPicturePermission ? 'PiP' : 'Permitir PiP'}
         </button>
 
         <div className={styles.modeSwitcher} aria-label="Selecionar modo">
@@ -1151,6 +1215,15 @@ export function App() {
           <p className={styles.pictureInPictureError} role="alert">
             {pictureInPictureError}
           </p>
+        ) : null}
+
+        {isPictureInPictureSupported && !hasPictureInPicturePermission ? (
+          <div className={styles.pictureInPicturePermission}>
+            <span>PiP aguardando permissão</span>
+            <button onClick={handlePictureInPicturePermission} type="button">
+              Permitir PiP
+            </button>
+          </div>
         ) : null}
 
         <dl className={styles.sessionStats}>
@@ -1277,14 +1350,13 @@ export function App() {
       <canvas
         aria-hidden="true"
         className={styles.pictureInPictureMedia}
-        height={PICTURE_IN_PICTURE_HEIGHT}
+        height={PICTURE_IN_PICTURE_CANVAS_HEIGHT}
         ref={pictureInPictureCanvasRef}
-        width={PICTURE_IN_PICTURE_WIDTH}
+        width={PICTURE_IN_PICTURE_CANVAS_WIDTH}
       />
       <video
         aria-hidden="true"
         className={styles.pictureInPictureMedia}
-        controls
         muted
         playsInline
         ref={pictureInPictureVideoRef}
