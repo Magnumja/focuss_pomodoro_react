@@ -71,8 +71,8 @@ const REST_EFFECT_BREATHS = ['in', 'out', 'slow'];
 const DAILY_FOCUS_GOAL = 4;
 const MODE_RITUALS: Record<TimerModeEffect, string> = {
   code: 'Feche abas, abra o editor e defina uma entrega pequena.',
-  reading: 'Deixe uma anotacao pronta e marque uma ideia por bloco.',
-  rest: 'Afaste a tela, respire fundo e solte ombros e mandibula.',
+  reading: 'Deixe uma anotação pronta e marque uma ideia por bloco.',
+  rest: 'Afaste a tela, respire fundo e solte ombros e mandíbula.',
   study: 'Revise o objetivo, leia ativo e teste sem olhar resposta.',
 };
 
@@ -81,7 +81,7 @@ const DEFAULT_TIMER_MODES: TimerMode[] = [
     id: 'code',
     label: 'Code',
     duration: 45 * MINUTE_IN_SECONDS,
-    description: 'Fluxo de codigo',
+    description: 'Fluxo de código',
     category: 'focus',
     effect: 'code',
   },
@@ -89,7 +89,7 @@ const DEFAULT_TIMER_MODES: TimerMode[] = [
     id: 'study',
     label: 'Estudos',
     duration: 35 * MINUTE_IN_SECONDS,
-    description: 'Revisao ativa',
+    description: 'Revisão ativa',
     category: 'focus',
     effect: 'study',
   },
@@ -607,7 +607,7 @@ export function App() {
   const dailyGoalProgress = Math.min(100, (todaysFocuses / DAILY_FOCUS_GOAL) * 100);
   const activeModeRitual = activeMode.effect
     ? MODE_RITUALS[activeMode.effect]
-    : 'Escolha uma tarefa pequena e tire notificacoes do caminho.';
+    : 'Escolha uma tarefa pequena e tire notificações do caminho.';
   const estimatedFinishTime = formatClockTime(
     new Date(Date.now() + remainingSeconds * 1000),
   );
@@ -1251,7 +1251,7 @@ export function App() {
             </div>
           </dl>
 
-          <div className={styles.focusIdeas} aria-label="Ideias para a sessao">
+          <div className={styles.focusIdeas} aria-label="Ideias para a sessão">
             <article className={styles.focusIdeaCard}>
               <span>Meta de hoje</span>
               <strong>
@@ -1263,19 +1263,19 @@ export function App() {
             </article>
 
             <article className={styles.focusIdeaCard}>
-              <span>Ritual rapido</span>
+              <span>Ritual rápido</span>
               <p>{activeModeRitual}</p>
             </article>
 
             <article className={styles.focusIdeaCard}>
-              <span>Termina as</span>
+              <span>Termina às</span>
               <strong>{estimatedFinishTime}</strong>
               <small>{isRunning ? 'em andamento' : 'se iniciar agora'}</small>
             </article>
           </div>
         </section>
 
-        <section className={styles.modesBubble} aria-label="Modos e historico">
+        <section className={styles.modesBubble} aria-label="Modos e histórico">
           <div className={styles.managementGrid}>
           <section className={styles.panelSection} aria-labelledby="custom-mode-title">
             <div className={styles.panelHeader}>
