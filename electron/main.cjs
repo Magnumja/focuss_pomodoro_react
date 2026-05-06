@@ -1,6 +1,10 @@
 const { app, BrowserWindow, Menu } = require('electron');
 const path = require('node:path');
 
+if (process.platform === 'linux') {
+  app.commandLine.appendSwitch('no-sandbox');
+}
+
 function createMainWindow() {
   const mainWindow = new BrowserWindow({
     width: 1120,
