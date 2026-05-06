@@ -29,7 +29,6 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
-  transform: translateZ(0);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -37,13 +36,10 @@ body {
 
 body::before,
 body::after {
-  contain: paint;
   content: '';
   inset: 0;
   pointer-events: none;
   position: fixed;
-  transform: translate3d(0, 0, 0);
-  will-change: transform, opacity;
 }
 
 body::before {
@@ -57,7 +53,7 @@ body::before {
       rgba(255, 255, 255, 0.035) 45px,
       transparent 48px
     );
-  opacity: 0.58;
+  opacity: 0.42;
   z-index: 0;
 }
 
@@ -79,8 +75,8 @@ body::after {
       rgba(184, 230, 255, 0.13),
       transparent 68%
     );
-  filter: blur(24px) saturate(1.12);
-  opacity: 0.42;
+  filter: blur(32px) saturate(1.12);
+  opacity: 0.34;
   transform: scale(1.08);
   z-index: 0;
 }
@@ -97,7 +93,6 @@ button {
 }
 
 #root {
-  isolation: isolate;
   min-height: 100vh;
   position: relative;
   z-index: 1;
