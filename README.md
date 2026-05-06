@@ -1,14 +1,55 @@
+<div align="center">
+
 # Focuss Pomodoro
 
 Timer Pomodoro desktop e web para sessoes de foco, pausas e acompanhamento de
 produtividade.
 
-O projeto usa React + TypeScript no frontend, Vite para desenvolvimento/build
-web e Electron para empacotar a aplicacao como executavel desktop para Windows
-e Linux.
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?logo=vite&logoColor=white)](https://vite.dev)
+[![Electron](https://img.shields.io/badge/Electron-41-47848F?logo=electron&logoColor=white)](https://www.electronjs.org)
+[![Deploy](https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render&logoColor=white)](https://focuss-pomodoro.onrender.com)
+
+[Acessar aplicacao online](https://focuss-pomodoro.onrender.com) |
+[Instalacao](#instalacao) |
+[Build desktop](#build-desktop) |
+[Ubuntu](#executando-no-ubuntu)
+
+</div>
+
+## Visao geral
+
+Focuss Pomodoro e uma aplicacao de produtividade feita para rodar no navegador
+e tambem como app desktop. O projeto usa React + TypeScript no frontend, Vite
+para desenvolvimento/build web e Electron para empacotar executaveis para
+Windows e Linux.
+
+| Item | Descricao |
+| --- | --- |
+| Aplicacao online | https://focuss-pomodoro.onrender.com |
+| Plataforma web | React + TypeScript + Vite |
+| Plataforma desktop | Electron + Electron Builder |
+| Pacote Windows | `.exe` portatil |
+| Pacote Linux | `.tar.gz` com binario executavel |
+| Persistencia | `localStorage` |
+| Estado do repositorio | App funcional com build web e desktop |
+
+## Aplicacao online
+
+A versao hospedada esta disponivel em:
+
+```text
+https://focuss-pomodoro.onrender.com
+```
+
+Tambem e possivel abrir diretamente pelo link:
+[focuss-pomodoro.onrender.com](https://focuss-pomodoro.onrender.com).
 
 ## Sumario
 
+- [Visao geral](#visao-geral)
+- [Aplicacao online](#aplicacao-online)
 - [Recursos](#recursos)
 - [Tecnologias](#tecnologias)
 - [Requisitos](#requisitos)
