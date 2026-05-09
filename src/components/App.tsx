@@ -75,15 +75,6 @@ const PICTURE_IN_PICTURE_CANVAS_WIDTH =
   PICTURE_IN_PICTURE_WIDTH * PICTURE_IN_PICTURE_SCALE;
 const PICTURE_IN_PICTURE_CANVAS_HEIGHT =
   PICTURE_IN_PICTURE_HEIGHT * PICTURE_IN_PICTURE_SCALE;
-const CODE_EFFECT_LINES = [
-  'const flow = focus.start();',
-  'while (deepWork) commit();',
-  'timer.tick(() => ship());',
-  'await idea.compile();',
-];
-const STUDY_EFFECT_NOTES = ['rev', 'map', 'quiz', 'anki'];
-const READING_EFFECT_LINES = ['linha 01', 'linha 02', 'linha 03', 'linha 04'];
-const REST_EFFECT_BREATHS = ['in', 'out', 'slow'];
 const DAILY_FOCUS_GOAL = 4;
 const MODE_RITUALS: Record<TimerModeEffect, string> = {
   code: 'Feche abas, abra o editor e defina uma entrega pequena.',
@@ -1086,6 +1077,24 @@ export function App() {
   }, [focusTasks]);
 
   useEffect(() => {
+    if (!activeOverlay) {
+      return;
+    }
+
+    function handleOverlayKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setActiveOverlay(null);
+      }
+    }
+
+    window.addEventListener('keydown', handleOverlayKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleOverlayKeyDown);
+    };
+  }, [activeOverlay]);
+
+  useEffect(() => {
     try {
       window.localStorage.setItem(COMPLETION_SOUND_STORAGE_KEY, completionSoundStyle);
     } catch {
@@ -1523,40 +1532,6 @@ export function App() {
 
   return (
     <main className={`${styles.pageShell} ${activeEffectClassName}`}>
-      <div className={styles.ambientEffect} aria-hidden="true">
-        {activeMode.effect === 'code' ? (
-          <div className={styles.codeEffect}>
-            {CODE_EFFECT_LINES.map((line) => (
-              <span key={line}>{line}</span>
-            ))}
-          </div>
-        ) : null}
-
-        {activeMode.effect === 'study' ? (
-          <div className={styles.studyEffect}>
-            {STUDY_EFFECT_NOTES.map((note) => (
-              <span key={note}>{note}</span>
-            ))}
-          </div>
-        ) : null}
-
-        {activeMode.effect === 'reading' ? (
-          <div className={styles.readingEffect}>
-            {READING_EFFECT_LINES.map((line) => (
-              <span key={line} />
-            ))}
-          </div>
-        ) : null}
-
-        {activeMode.effect === 'rest' ? (
-          <div className={styles.restEffect}>
-            {REST_EFFECT_BREATHS.map((breath) => (
-              <span key={breath} />
-            ))}
-          </div>
-        ) : null}
-      </div>
-
       <nav className={styles.appNav} aria-label="Acoes do Focuss">
         <div className={styles.navInner}>
           <strong>Focuss</strong>
@@ -1903,7 +1878,15 @@ export function App() {
       ) : null}
 
       {activeOverlay ? (
-        <div className={styles.overlayBackdrop} role="presentation">
+        <div
+          className={styles.overlayBackdrop}
+          onClick={(event) => {
+            if (event.currentTarget === event.target) {
+              setActiveOverlay(null);
+            }
+          }}
+          role="presentation"
+        >
           <section
             aria-labelledby={`${activeOverlay}-overlay-title`}
             aria-modal="true"
