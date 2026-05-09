@@ -1,10 +1,9 @@
 .pageShell {
   align-items: center;
   display: grid;
-  gap: var(--space-8);
   justify-items: center;
   min-height: 100svh;
-  padding: var(--space-8) var(--space-4);
+  padding: calc(var(--space-8) + 52px) var(--space-4) var(--space-8);
   position: relative;
   isolation: isolate;
   width: 100%;
@@ -100,8 +99,20 @@
 }
 
 .hero {
-  padding-top: var(--space-4);
+  padding-top: 0;
   position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.contentStack {
+  display: grid;
+  gap: var(--space-8);
+  justify-items: center;
+  margin-inline: auto;
+  max-width: 820px;
+  position: relative;
+  width: 100%;
   z-index: 1;
 }
 
@@ -111,6 +122,105 @@
   pointer-events: none;
   position: fixed;
   z-index: 0;
+}
+
+.appNav {
+  align-items: center;
+  background: #1f2026;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0;
+  box-shadow:
+    0 14px 24px rgba(0, 0, 0, 0.42),
+    0 2px 0 rgba(255, 255, 255, 0.035) inset;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  max-width: none;
+  min-height: 52px;
+  padding: 0 var(--space-4);
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: 8;
+}
+
+.navInner {
+  align-items: center;
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(120px, 1fr) auto minmax(120px, 1fr);
+  max-width: 930px;
+  width: 100%;
+}
+
+.appNav strong {
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.navLinkGroup {
+  display: flex;
+  gap: 1.65rem;
+  grid-column: 2;
+  justify-self: center;
+}
+
+.navLinkGroup button,
+.navCta,
+.overlayHeader button,
+.taskDetailHeader button,
+.taskDetailActions button,
+.taskForm button,
+.soundOptions button {
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 850;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.navLinkGroup button,
+.navCta {
+  background: transparent;
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.72rem;
+  min-height: 28px;
+  padding: 0;
+}
+
+.navLinkGroup button:hover,
+.navCta:hover {
+  color: var(--text-primary);
+  transform: none;
+}
+
+.navCta {
+  background: #1498b9;
+  border-color: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  box-shadow:
+    0 6px 14px rgba(20, 152, 185, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+  grid-column: 3;
+  justify-self: end;
+  min-width: 76px;
+  padding: 0 1rem;
+}
+
+.navCta:hover {
+  background: #20add0;
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
 }
 
 .codeEffect,
@@ -465,7 +575,7 @@
   display: grid;
   gap: var(--space-3);
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  padding: 0 var(--space-6) var(--space-6) 0;
+  padding: 0 0 var(--space-6);
 }
 
 .modeItem {
@@ -502,6 +612,15 @@
 .modeButton:focus-visible,
 .removeModeButton:focus-visible,
 .presetWidget:focus-visible,
+.navLinkGroup button:focus-visible,
+.navCta:focus-visible,
+.overlayHeader button:focus-visible,
+.soundOptions button:focus-visible,
+.taskDockItem:focus-visible,
+.taskDetailHeader button:focus-visible,
+.taskDetailActions button:focus-visible,
+.taskForm button:focus-visible,
+.taskForm input:focus-visible,
 .pictureInPicturePermission button:focus-visible,
 .pictureInPictureButton:focus-visible,
 .primaryButton:focus-visible,
@@ -746,6 +865,10 @@
   min-width: 0;
   padding: var(--space-5);
   position: relative;
+}
+
+.timerCard > .infoBubble {
+  display: none;
 }
 
 .infoBubble::before,
@@ -1013,6 +1136,547 @@
   top: 0;
 }
 
+.taskDock {
+  bottom: var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+  left: var(--space-4);
+  max-width: min(250px, calc(100vw - 2rem));
+  position: fixed;
+  z-index: 7;
+}
+
+.taskDockItem {
+  align-items: center;
+  background: rgba(18, 18, 18, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px 18px 18px 7px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 48px;
+  overflow: visible;
+  padding: 0.62rem 0.68rem 0.62rem 0.78rem;
+  text-align: left;
+  position: relative;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.taskDockItem::before,
+.taskDockItem::after {
+  background: rgba(18, 18, 18, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  content: '';
+  position: absolute;
+}
+
+.taskDockItem::before {
+  bottom: -6px;
+  height: 10px;
+  left: 14px;
+  width: 10px;
+}
+
+.taskDockItem::after {
+  bottom: -13px;
+  height: 6px;
+  left: 7px;
+  width: 6px;
+}
+
+.taskDockItem:hover,
+.taskDockItemActive {
+  background: rgba(25, 25, 25, 0.98);
+  border-color: rgba(184, 230, 255, 0.26);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.taskDockItem span {
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 1.2;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taskDockItem strong {
+  background: transparent;
+  border: 0;
+  color: var(--accent-cool);
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+  padding: 0;
+}
+
+.taskDetail {
+  background: rgba(18, 18, 18, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  bottom: calc(var(--space-4) + 52px);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.36);
+  display: grid;
+  gap: var(--space-3);
+  left: var(--space-4);
+  max-width: min(320px, calc(100vw - 2rem));
+  padding: var(--space-4);
+  position: fixed;
+  width: 320px;
+  z-index: 8;
+}
+
+.taskDetailHeader,
+.overlayHeader {
+  align-items: center;
+  display: flex;
+  gap: var(--space-3);
+  justify-content: space-between;
+}
+
+.taskDetailHeader span,
+.overlayHeader span {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.taskDetailHeader button,
+.overlayHeader button {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  min-height: 28px;
+  padding: 0 0.58rem;
+}
+
+.taskDetailHeader button:hover,
+.overlayHeader button:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.taskDetail h2,
+.overlayContent h2 {
+  color: var(--text-primary);
+  font-size: 1.08rem;
+  margin: 0;
+}
+
+.taskDetailStats,
+.metricsGrid {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.taskDetailStats {
+  grid-template-columns: 1fr;
+}
+
+.taskDetailStats div,
+.metricsGrid div {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: 0.66rem 0.72rem;
+}
+
+.taskDetailStats dt,
+.metricsGrid dt {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.taskDetailStats dd,
+.metricsGrid dd {
+  color: var(--text-primary);
+  font-size: 0.84rem;
+  font-weight: 850;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.taskDetailActions {
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.taskDetailActions button,
+.taskForm button {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  min-height: 36px;
+  padding: 0 0.52rem;
+}
+
+.taskDetailActions button:first-child,
+.taskForm button {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-primary);
+}
+
+.taskDetailActions button:hover:not(:disabled),
+.taskForm button:hover {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--bg-primary);
+  transform: translateY(-1px);
+}
+
+.taskDetailActions button:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.overlayBackdrop {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.66);
+  display: grid;
+  inset: 0;
+  justify-items: center;
+  padding: var(--space-4);
+  position: fixed;
+  z-index: 20;
+}
+
+.overlayPanel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.012)),
+    rgba(20, 20, 20, 0.97);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: var(--shadow-card);
+  display: grid;
+  gap: var(--space-5);
+  max-height: calc(100svh - 2rem);
+  overflow: auto;
+  padding: var(--space-5);
+  width: min(100%, 520px);
+}
+
+.metricsOverlayPanel {
+  width: min(100%, 760px);
+}
+
+.overlayContent {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.soundOptions,
+.taskForm {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.soundOptions button {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  display: grid;
+  gap: var(--space-1);
+  min-height: 72px;
+  padding: 0.86rem;
+  text-align: left;
+}
+
+.soundOptions button:hover,
+.soundOptionActive {
+  background: var(--bg-elevated);
+  border-color: var(--accent-cool);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.soundOptions strong {
+  color: inherit;
+  font-size: 0.98rem;
+}
+
+.soundOptions span {
+  color: var(--text-muted);
+  font-size: 0.84rem;
+}
+
+.taskForm {
+  grid-template-columns: minmax(0, 1fr) minmax(96px, 0.35fr);
+}
+
+.taskForm label {
+  color: var(--text-secondary);
+  display: grid;
+  font-size: 0.82rem;
+  font-weight: 800;
+  gap: var(--space-2);
+}
+
+.taskForm input {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  min-height: 46px;
+  padding: 0.8rem 0.9rem;
+  width: 100%;
+}
+
+.taskForm input:hover,
+.taskForm input:focus {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+}
+
+.taskForm button,
+.metricsGrid {
+  grid-column: 1 / -1;
+}
+
+.metricsGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.metricsBi {
+  gap: var(--space-3);
+}
+
+.biHeading {
+  align-items: end;
+  display: flex;
+  gap: var(--space-4);
+  justify-content: space-between;
+}
+
+.biHeading div {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.biHeading span,
+.biPanelHeader span {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.biHeading strong {
+  background: rgba(184, 230, 255, 0.1);
+  border: 1px solid rgba(184, 230, 255, 0.22);
+  border-radius: 999px;
+  color: var(--accent-cool);
+  font-size: 0.84rem;
+  padding: 0.45rem 0.72rem;
+  white-space: nowrap;
+}
+
+.metricsGrid div {
+  min-height: 94px;
+}
+
+.metricsGrid dd {
+  font-size: 1.32rem;
+}
+
+.metricsGrid span {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.biPanel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.008)),
+    rgba(17, 17, 17, 0.82);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.biPanelHeader {
+  align-items: center;
+  display: flex;
+  gap: var(--space-3);
+  justify-content: space-between;
+}
+
+.biPanelHeader strong {
+  color: var(--text-primary);
+  font-size: 0.94rem;
+}
+
+.biProgressTrack {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.biProgressTrack span {
+  background: linear-gradient(90deg, var(--accent), var(--accent-cool));
+  display: block;
+  height: 100%;
+  min-width: 2px;
+}
+
+.biBars {
+  align-items: end;
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  min-height: 172px;
+}
+
+.biBarItem {
+  align-items: center;
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+  min-width: 0;
+}
+
+.biBarTrack {
+  align-items: end;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px 999px 6px 6px;
+  display: flex;
+  height: 112px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.biBarTrack span {
+  background: linear-gradient(180deg, var(--accent-cool), rgba(184, 230, 255, 0.34));
+  border-radius: inherit;
+  display: block;
+  margin-top: auto;
+  width: 100%;
+}
+
+.biBarItem strong {
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.biBarItem small {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+.biModeList,
+.biRecentList,
+.biSessionGrid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.biSessionGrid {
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 0.58fr) minmax(0, 1.7fr);
+  margin: 0;
+}
+
+.biSessionGrid div {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: 0.72rem;
+}
+
+.biSessionGrid dt {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.biSessionGrid dd {
+  color: var(--text-primary);
+  font-size: 0.84rem;
+  font-weight: 750;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.biModeRow {
+  align-items: center;
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: minmax(130px, 0.8fr) minmax(0, 1fr) 44px;
+}
+
+.biModeRow div:first-child {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.biModeRow strong,
+.biRecentList strong {
+  color: var(--text-primary);
+  font-size: 0.88rem;
+}
+
+.biModeRow span,
+.biRecentList span {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.biModeRow em {
+  color: var(--accent-cool);
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 850;
+  text-align: right;
+}
+
+.biRecentList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.biRecentList li {
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  gap: var(--space-3);
+  justify-content: space-between;
+  padding-bottom: var(--space-2);
+}
+
+.biRecentList li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
 .githubLink {
   background: rgba(17, 17, 17, 0.78);
   border: 1px solid var(--border-color);
@@ -1045,11 +1709,46 @@
 @media (max-width: 680px) {
   .pageShell {
     gap: var(--space-4);
-    padding: var(--space-4) var(--space-3);
+    padding: calc(var(--space-4) + 94px) var(--space-3) var(--space-4);
   }
 
-  .hero {
-    padding-top: 0;
+  .contentStack {
+    gap: var(--space-4);
+  }
+
+  .appNav {
+    padding: 0.65rem;
+    top: 0;
+  }
+
+  .navInner {
+    align-items: stretch;
+    display: grid;
+    gap: var(--space-2);
+    grid-template-columns: 1fr;
+  }
+
+  .appNav strong {
+    text-align: center;
+  }
+
+  .navLinkGroup {
+    display: grid;
+    gap: var(--space-2);
+    grid-column: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .navLinkGroup button,
+  .navCta {
+    min-width: 0;
+    padding-inline: 0.35rem;
+  }
+
+  .navCta {
+    grid-column: auto;
+    justify-self: stretch;
+    min-width: 0;
   }
 
   .timerCard {
@@ -1060,7 +1759,10 @@
 
   .managementGrid,
   .focusIdeas,
-  .customModeForm {
+  .customModeForm,
+  .taskForm,
+  .metricsGrid,
+  .taskDetailStats {
     grid-template-columns: 1fr;
   }
 
@@ -1117,7 +1819,6 @@
 
   .modeSwitcher {
     gap: var(--space-2);
-    padding-right: 0;
     padding-top: var(--space-4);
     padding-bottom: var(--space-4);
   }
@@ -1130,6 +1831,61 @@
   .githubLink {
     bottom: var(--space-3);
     right: var(--space-3);
+  }
+
+  .taskDock,
+  .taskDetail {
+    left: var(--space-3);
+    max-width: calc(100vw - 1.5rem);
+    right: var(--space-3);
+    width: auto;
+  }
+
+  .taskDock {
+    bottom: var(--space-5);
+  }
+
+  .taskDetail {
+    bottom: calc(var(--space-3) + 56px);
+  }
+
+  .taskDetailActions {
+    grid-template-columns: 1fr;
+  }
+
+  .biHeading,
+  .biPanelHeader,
+  .biRecentList li {
+    align-items: start;
+    display: grid;
+    gap: var(--space-2);
+    justify-content: stretch;
+  }
+
+  .biHeading strong {
+    justify-self: start;
+  }
+
+  .biBars {
+    gap: 0.35rem;
+  }
+
+  .biBarTrack {
+    height: 96px;
+  }
+
+  .biModeRow {
+    align-items: stretch;
+    gap: var(--space-2);
+    grid-template-columns: 1fr;
+  }
+
+  .biSessionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .biModeRow em {
+    text-align: left;
   }
 
   .modeButton {
@@ -1233,6 +1989,11 @@
   .githubLink {
     display: none;
   }
+
+  .taskDock,
+  .taskDetail {
+    right: var(--space-2);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1243,6 +2004,13 @@
   .restEffect span,
   .modeButton,
   .presetWidget,
+  .navLinkGroup button,
+  .navCta,
+  .taskDockItem,
+  .taskDetailActions button,
+  .overlayHeader button,
+  .soundOptions button,
+  .taskForm button,
   .primaryButton,
   .secondaryButton,
   .progressTrack span {
