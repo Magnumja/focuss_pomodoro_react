@@ -1629,9 +1629,9 @@ export function App() {
             disabled={!isPictureInPictureSupported}
             onClick={handlePictureInPictureToggle}
             title={pictureInPictureButtonLabel}
-            type="button"
-          >
-            {hasPictureInPicturePermission ? 'PiP' : 'Permitir PiP'}
+          type="button"
+        >
+            PiP
           </button>
 
         <div className={styles.modeSwitcher} aria-label="Selecionar modo">
@@ -1699,15 +1699,6 @@ export function App() {
           <p className={styles.pictureInPictureError} role="alert">
             {pictureInPictureError}
           </p>
-        ) : null}
-
-        {isPictureInPictureSupported && !hasPictureInPicturePermission ? (
-          <div className={styles.pictureInPicturePermission}>
-            <span>PiP aguardando permissão</span>
-            <button onClick={handlePictureInPicturePermission} type="button">
-              Permitir PiP
-            </button>
-          </div>
         ) : null}
 
         <section className={styles.infoBubble} aria-labelledby="focus-info-title">

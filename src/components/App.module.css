@@ -14,7 +14,7 @@
   content: '';
   inset: 0;
   pointer-events: none;
-  position: fixed;
+  position: absolute;
   z-index: -1;
 }
 
@@ -28,9 +28,7 @@
       rgba(184, 230, 255, 0.07) 66px,
       transparent 68px
     );
-  mask-image: linear-gradient(180deg, transparent, #000 12%, #000 78%, transparent);
-  opacity: 0.38;
-  transform: translate3d(0, 0, 0);
+  opacity: 0.24;
 }
 
 .pageShell::after {
@@ -45,9 +43,7 @@
       rgba(184, 230, 255, 0.11) 228deg,
       transparent 292deg
     );
-  filter: blur(26px);
-  opacity: 0.26;
-  transform: scale(1.08);
+  opacity: 0.12;
 }
 
 .pageShellCode::after {
@@ -120,7 +116,7 @@
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  position: fixed;
+  position: absolute;
   z-index: 0;
 }
 
@@ -244,12 +240,13 @@
 }
 
 .codeEffect span {
-  animation: codeDrift 8s linear infinite;
+  animation: codeDrift 10s linear infinite;
   background: rgba(5, 5, 5, 0.24);
   border: 1px solid rgba(184, 230, 255, 0.1);
   border-radius: 6px;
   padding: 0.38rem 0.55rem;
   white-space: nowrap;
+  will-change: opacity, transform;
 }
 
 .codeEffect span:nth-child(2) {
@@ -276,7 +273,7 @@
 
 .studyEffect span {
   align-items: center;
-  animation: noteFloat 5.5s ease-in-out infinite;
+  animation: noteFloat 7s ease-in-out infinite;
   background: rgba(255, 234, 170, 0.12);
   border: 1px solid rgba(255, 234, 170, 0.24);
   border-radius: 7px;
@@ -287,6 +284,7 @@
   height: 44px;
   justify-content: center;
   text-transform: uppercase;
+  will-change: transform;
 }
 
 .studyEffect span:nth-child(2),
@@ -308,10 +306,11 @@
 }
 
 .readingEffect span {
-  animation: readingSweep 4.8s ease-in-out infinite;
+  animation: readingSweep 6s ease-in-out infinite;
   background: rgba(245, 245, 245, 0.18);
   border-radius: 999px;
   height: 6px;
+  will-change: opacity, transform;
 }
 
 .readingEffect span:nth-child(2) {
@@ -337,12 +336,13 @@
 }
 
 .restEffect span {
-  animation: restBreath 6s ease-in-out infinite;
+  animation: restBreath 7s ease-in-out infinite;
   border: 1px solid rgba(126, 229, 179, 0.28);
   border-radius: 50%;
   grid-area: 1 / 1;
   height: 66px;
   width: 66px;
+  will-change: opacity, transform;
 }
 
 .restEffect span:nth-child(2) {
@@ -358,6 +358,7 @@
   gap: var(--space-3);
   grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
   position: relative;
+  contain: layout paint;
   width: min(100%, 820px);
   z-index: 1;
 }
@@ -558,6 +559,7 @@
   overflow: hidden;
   padding: clamp(1.15rem, 4vw, 2.35rem);
   position: relative;
+  contain: layout paint;
   z-index: 1;
   width: min(100%, 820px);
 }
@@ -865,6 +867,7 @@
   min-width: 0;
   padding: var(--space-5);
   position: relative;
+  contain: layout paint;
 }
 
 .timerCard > .infoBubble {
@@ -1704,6 +1707,47 @@
   color: var(--bg-primary);
   outline: none;
   transform: translateY(-1px);
+}
+
+.navLinkGroup button,
+.navCta,
+.modeButton,
+.removeModeButton,
+.presetWidget,
+.pictureInPictureButton,
+.pictureInPicturePermission button,
+.primaryButton,
+.secondaryButton,
+.addModeButton,
+.customModeForm input,
+.taskDockItem,
+.taskDetailActions button,
+.taskForm button,
+.soundOptions button,
+.overlayHeader button,
+.githubLink,
+.progressTrack span,
+.focusIdeaProgress span,
+.biProgressTrack span {
+  transition: none;
+}
+
+.modeButton:hover,
+.presetWidget:hover,
+.pictureInPictureButton:hover:not(:disabled),
+.pictureInPicturePermission button:hover,
+.primaryButton:hover,
+.secondaryButton:hover:not(:disabled),
+.addModeButton:hover,
+.taskDockItem:hover,
+.taskDockItemActive,
+.taskDetailActions button:hover:not(:disabled),
+.taskForm button:hover,
+.soundOptions button:hover,
+.soundOptionActive,
+.githubLink:hover,
+.githubLink:focus-visible {
+  transform: none;
 }
 
 @media (max-width: 680px) {

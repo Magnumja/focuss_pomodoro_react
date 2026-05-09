@@ -72,12 +72,10 @@ body::after {
       transparent,
       rgba(255, 255, 255, 0.1),
       transparent 28%,
-      rgba(184, 230, 255, 0.13),
+        rgba(184, 230, 255, 0.13),
       transparent 68%
     );
-  filter: blur(32px) saturate(1.12);
-  opacity: 0.34;
-  transform: scale(1.08);
+  opacity: 0.18;
   z-index: 0;
 }
 
