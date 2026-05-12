@@ -1,4 +1,5 @@
 import {
+  type CSSProperties,
   useCallback,
   useEffect,
   useMemo,
@@ -178,6 +179,16 @@ function formatShortDate(date: Date) {
   return new Intl.DateTimeFormat('pt-BR', {
     day: '2-digit',
     month: '2-digit',
+  }).format(date);
+}
+
+function formatLocalDateTime(date: Date) {
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    month: '2-digit',
+    second: '2-digit',
   }).format(date);
 }
 
@@ -790,6 +801,7 @@ export function App() {
   const [taskName, setTaskName] = useState('');
   const [taskMinutes, setTaskMinutes] = useState('25');
   const [taskError, setTaskError] = useState('');
+  const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
   const [hasPictureInPicturePermission, setHasPictureInPicturePermission] = useState(
     loadPictureInPicturePermission,
   );
@@ -942,6 +954,18 @@ export function App() {
   const timerLabel = formatTime(currentTimerRemaining);
   const timerContextLabel = activeTimerTask?.title ?? activeMode.label;
   const dailyGoalProgress = Math.min(100, (todaysFocuses / DAILY_FOCUS_GOAL) * 100);
+  const navGoalLabel =
+    todaysFocuses >= DAILY_FOCUS_GOAL
+      ? 'Meta completa'
+      : `${todaysFocuses}/${DAILY_FOCUS_GOAL} hoje`;
+  const localDateTimeLabel = formatLocalDateTime(currentDateTime);
+  const timerPulseLabel = isTimerFinished
+    ? 'Fechado'
+    : isTimerRunning
+      ? 'Fluxo ativo'
+      : activeTimerTask
+        ? 'Task pronta'
+        : 'Fila limpa';
   const activeModeRitual = activeMode.effect
     ? MODE_RITUALS[activeMode.effect]
     : 'Escolha uma tarefa pequena e tire notificações do caminho.';
@@ -1173,6 +1197,14 @@ export function App() {
       }
     }
   }, [hasPictureInPicturePermission]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
     const runningTask = focusTasks.find((task) => task.status === 'running');
@@ -1626,6 +1658,13 @@ export function App() {
       <nav className={styles.appNav} aria-label="Acoes do Focuss">
         <div className={styles.navInner}>
           <strong>Focuss</strong>
+          <div className={styles.navMeta} aria-label="Resumo atual">
+            <span>{navGoalLabel}</span>
+            <span>{estimatedFinishTime}</span>
+          </div>
+          <time className={styles.navClock} dateTime={currentDateTime.toISOString()}>
+            {localDateTimeLabel}
+          </time>
           <div className={styles.navLinkGroup}>
             <button
               aria-haspopup="dialog"
@@ -1742,12 +1781,18 @@ export function App() {
           })}
         </div>
 
-        <div className={styles.timerDisplay}>
+        <div
+          className={`${styles.timerDisplay} ${
+            isTimerRunning ? styles.timerDisplayRunning : ''
+          }`}
+          style={{ '--timer-progress': `${progressPercentage}%` } as CSSProperties}
+        >
           <span className={styles.statusBadge}>{statusText}</span>
           <span className={styles.timerContext}>{timerContextLabel}</span>
           <strong aria-live="polite" className={styles.timerValue}>
             {timerLabel}
           </strong>
+          <span className={styles.timerPulse}>{timerPulseLabel}</span>
         </div>
 
         <div className={styles.progressTrack} aria-hidden="true">
