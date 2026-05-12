@@ -72,9 +72,9 @@ Tambem e possivel abrir diretamente pelo link:
 
 ## Recursos
 
-- Timer Pomodoro padrao de 25 minutos.
-- Pausa curta de 5 minutos.
-- Pausa longa de 15 minutos.
+- Presets de foco para codigo, estudos e leitura.
+- Preset de descanso de 15 minutos.
+- Timer com duracoes entre 35 e 45 minutos nos modos base de foco.
 - Modos personalizados de foco, com nome, duracao e descricao.
 - Inicio, pausa, continuacao e reset do timer.
 - Barra de progresso visual da sessao atual.
