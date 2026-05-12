@@ -68,8 +68,8 @@ const PICTURE_IN_PICTURE_PERMISSION_STORAGE_KEY =
 const MAX_CUSTOM_MODE_MINUTES = 180;
 const MAX_TASK_MINUTES = 240;
 const MAX_STORED_FOCUS_SESSIONS = 200;
-const PICTURE_IN_PICTURE_WIDTH = 142;
-const PICTURE_IN_PICTURE_HEIGHT = 48;
+const PICTURE_IN_PICTURE_WIDTH = 174;
+const PICTURE_IN_PICTURE_HEIGHT = 60;
 const PICTURE_IN_PICTURE_SCALE = 3;
 const PICTURE_IN_PICTURE_CANVAS_WIDTH =
   PICTURE_IN_PICTURE_WIDTH * PICTURE_IN_PICTURE_SCALE;
@@ -504,6 +504,7 @@ function playCompletionSound(
 function drawPictureInPictureTimer(
   canvas: HTMLCanvasElement,
   timerLabel: string,
+  timerContextLabel: string,
 ) {
   const context = canvas.getContext('2d');
 
@@ -515,7 +516,7 @@ function drawPictureInPictureTimer(
   const width = PICTURE_IN_PICTURE_WIDTH;
   const height = PICTURE_IN_PICTURE_HEIGHT;
   const iconCenterX = 22;
-  const iconCenterY = height / 2;
+  const iconCenterY = 36;
 
   context.setTransform(scale, 0, 0, scale, 0, 0);
   context.imageSmoothingEnabled = true;
@@ -539,6 +540,11 @@ function drawPictureInPictureTimer(
   context.stroke();
 
   context.fillStyle = '#f5f5f5';
+  context.font = '800 10px Inter, system-ui, sans-serif';
+  context.textAlign = 'left';
+  context.textBaseline = 'middle';
+  context.fillText(timerContextLabel.slice(0, 21), 10, 14);
+
   context.font = '850 27px Inter, system-ui, sans-serif';
   context.textAlign = 'left';
   context.textBaseline = 'middle';
@@ -575,11 +581,27 @@ function writeDocumentPictureInPictureShell(pipWindow: Window) {
         align-items: center;
         background: #070707;
         box-sizing: border-box;
-        display: flex;
-        gap: 7px;
+        display: grid;
+        gap: 2px 7px;
+        grid-template-columns: 24px minmax(0, 1fr) 24px;
+        grid-template-rows: 16px 28px;
         height: 100vh;
         padding: 6px 7px;
         width: 100vw;
+      }
+
+      .timerLabel {
+        color: rgba(245, 245, 245, 0.72);
+        font-size: 10px;
+        font-weight: 800;
+        grid-column: 1 / -1;
+        letter-spacing: 0;
+        line-height: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-transform: uppercase;
+        white-space: nowrap;
       }
 
       .clockIcon {
@@ -587,6 +609,8 @@ function writeDocumentPictureInPictureShell(pipWindow: Window) {
         border-radius: 50%;
         box-sizing: border-box;
         flex: 0 0 auto;
+        grid-column: 1;
+        grid-row: 2;
         height: 17px;
         opacity: 0.92;
         position: relative;
@@ -620,6 +644,8 @@ function writeDocumentPictureInPictureShell(pipWindow: Window) {
         font-size: 24px;
         font-variant-numeric: tabular-nums;
         font-weight: 850;
+        grid-column: 2;
+        grid-row: 2;
         letter-spacing: 0;
         line-height: 1;
         min-width: 0;
@@ -635,6 +661,8 @@ function writeDocumentPictureInPictureShell(pipWindow: Window) {
         cursor: pointer;
         display: inline-flex;
         flex: 0 0 auto;
+        grid-column: 3;
+        grid-row: 2;
         height: 24px;
         justify-content: center;
         padding: 0;
@@ -679,6 +707,7 @@ function writeDocumentPictureInPictureShell(pipWindow: Window) {
   `;
   pipDocument.body.innerHTML = `
     <main class="pipShell" aria-label="Timer Picture-in-Picture">
+      <span class="timerLabel" id="pip-label">Focuss</span>
       <span class="clockIcon" aria-hidden="true"></span>
       <strong class="timerValue" id="pip-timer">00:00</strong>
       <button class="controlButton" id="pip-toggle" type="button">
@@ -691,6 +720,7 @@ function writeDocumentPictureInPictureShell(pipWindow: Window) {
 function updateDocumentPictureInPictureTimer(
   pipWindow: Window | null,
   timerLabel: string,
+  timerContextLabel: string,
   isRunning: boolean,
   isTimerFinished: boolean,
 ) {
@@ -699,6 +729,7 @@ function updateDocumentPictureInPictureTimer(
   }
 
   const pipDocument = pipWindow.document;
+  const labelElement = pipDocument.getElementById('pip-label');
   const timerElement = pipDocument.getElementById('pip-timer');
   const toggleButton = pipDocument.getElementById('pip-toggle') as HTMLButtonElement | null;
   const toggleIcon = pipDocument.getElementById('pip-toggle-icon');
@@ -707,6 +738,10 @@ function updateDocumentPictureInPictureTimer(
     : isTimerFinished
       ? 'Reiniciar timer'
       : 'Retomar timer';
+
+  if (labelElement) {
+    labelElement.textContent = timerContextLabel;
+  }
 
   if (timerElement) {
     timerElement.textContent = timerLabel;
@@ -742,6 +777,7 @@ export function App() {
     useState<CompletionSoundStyle>(loadCompletionSoundStyle);
   const [activeOverlay, setActiveOverlay] = useState<OverlayView>(null);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
+  const [activeTimerTaskId, setActiveTimerTaskId] = useState<string | null>(null);
   const [activeModeId, setActiveModeId] = useState(DEFAULT_TIMER_MODES[0].id);
   const [remainingSeconds, setRemainingSeconds] = useState(
     DEFAULT_TIMER_MODES[0].duration,
@@ -890,27 +926,38 @@ export function App() {
   }, [focusSessions, focusedMinutes]);
   const latestFocusSessions = focusSessions.slice(0, 3);
   const expandedTask = focusTasks.find((task) => task.id === expandedTaskId) ?? null;
+  const activeTimerTask =
+    focusTasks.find(
+      (task) => task.id === activeTimerTaskId && task.status !== 'finished',
+    ) ?? null;
+  const currentTimerDuration = activeTimerTask?.duration ?? activeMode.duration;
+  const currentTimerRemaining =
+    activeTimerTask?.remainingSeconds ?? remainingSeconds;
   const progressPercentage =
-    ((activeMode.duration - remainingSeconds) / activeMode.duration) * 100;
-  const isTimerFinished = remainingSeconds === 0;
-  const timerLabel = formatTime(remainingSeconds);
+    ((currentTimerDuration - currentTimerRemaining) / currentTimerDuration) * 100;
+  const isTimerRunning = activeTimerTask
+    ? activeTimerTask.status === 'running'
+    : isRunning;
+  const isTimerFinished = currentTimerRemaining === 0;
+  const timerLabel = formatTime(currentTimerRemaining);
+  const timerContextLabel = activeTimerTask?.title ?? activeMode.label;
   const dailyGoalProgress = Math.min(100, (todaysFocuses / DAILY_FOCUS_GOAL) * 100);
   const activeModeRitual = activeMode.effect
     ? MODE_RITUALS[activeMode.effect]
     : 'Escolha uma tarefa pequena e tire notificações do caminho.';
   const estimatedFinishTime = formatClockTime(
-    new Date(Date.now() + remainingSeconds * 1000),
+    new Date(Date.now() + currentTimerRemaining * 1000),
   );
-  timerStateRef.current = { isRunning };
+  timerStateRef.current = { isRunning: isTimerRunning };
 
-  const primaryActionLabel = isRunning
+  const primaryActionLabel = isTimerRunning
     ? 'Pausar'
-    : remainingSeconds === activeMode.duration
+    : currentTimerRemaining === currentTimerDuration
       ? 'Iniciar'
       : 'Continuar';
   const statusText = isTimerFinished
     ? 'Sessão finalizada'
-    : isRunning
+    : isTimerRunning
       ? 'Sessão em andamento'
       : 'Pronto para focar';
   const isDocumentPictureInPictureSupported =
@@ -994,7 +1041,8 @@ export function App() {
       updateDocumentPictureInPictureTimer(
         pipWindow,
         timerLabel,
-        isRunning,
+        timerContextLabel,
+        isTimerRunning,
         isTimerFinished,
       );
 
@@ -1017,7 +1065,13 @@ export function App() {
     } catch {
       return false;
     }
-  }, [isDocumentPictureInPictureSupported, isRunning, isTimerFinished, timerLabel]);
+  }, [
+    isDocumentPictureInPictureSupported,
+    isTimerFinished,
+    isTimerRunning,
+    timerContextLabel,
+    timerLabel,
+  ]);
 
   const requestPictureInPicture = useCallback(
     async (showError = false) => {
@@ -1037,7 +1091,7 @@ export function App() {
       }
 
       try {
-        drawPictureInPictureTimer(canvas, timerLabel);
+        drawPictureInPictureTimer(canvas, timerLabel, timerContextLabel);
 
         if (!video.srcObject) {
           video.srcObject = canvas.captureStream(1);
@@ -1061,7 +1115,12 @@ export function App() {
         return false;
       }
     },
-    [isVideoPictureInPictureSupported, requestDocumentPictureInPicture, timerLabel],
+    [
+      isVideoPictureInPictureSupported,
+      requestDocumentPictureInPicture,
+      timerContextLabel,
+      timerLabel,
+    ],
   );
 
   useEffect(() => {
@@ -1152,6 +1211,17 @@ export function App() {
   }, [focusTasks, playCompletionBell]);
 
   useEffect(() => {
+    if (
+      activeTimerTaskId &&
+      !focusTasks.some(
+        (task) => task.id === activeTimerTaskId && task.status !== 'finished',
+      )
+    ) {
+      setActiveTimerTaskId(null);
+    }
+  }, [activeTimerTaskId, focusTasks]);
+
+  useEffect(() => {
     if (!isRunning) {
       return;
     }
@@ -1188,12 +1258,12 @@ export function App() {
   }, [activeMode, isRunning, playCompletionBell]);
 
   useEffect(() => {
-    document.title = `${timerLabel} - ${activeMode.label}`;
+    document.title = `${timerLabel} - ${timerContextLabel}`;
 
     return () => {
       document.title = 'Focuss Pomodoro';
     };
-  }, [activeMode.label, timerLabel]);
+  }, [timerContextLabel, timerLabel]);
 
   useEffect(() => {
     return () => {
@@ -1208,14 +1278,15 @@ export function App() {
       return;
     }
 
-    drawPictureInPictureTimer(canvas, timerLabel);
+    drawPictureInPictureTimer(canvas, timerLabel, timerContextLabel);
     updateDocumentPictureInPictureTimer(
       documentPictureInPictureWindowRef.current,
       timerLabel,
-      isRunning,
+      timerContextLabel,
+      isTimerRunning,
       isTimerFinished,
     );
-  }, [isRunning, isTimerFinished, timerLabel]);
+  }, [isTimerFinished, isTimerRunning, timerContextLabel, timerLabel]);
 
   useEffect(() => {
     const video = pictureInPictureVideoRef.current;
@@ -1269,19 +1340,19 @@ export function App() {
       return;
     }
 
-    if (isRunning) {
+    if (isTimerRunning) {
       void video.play();
       return;
     }
 
     video.pause();
-  }, [isRunning]);
+  }, [isTimerRunning]);
 
   useEffect(() => {
     async function handleVisibilityChange() {
       if (document.visibilityState === 'hidden') {
         if (
-          isRunning &&
+          isTimerRunning &&
           hasPictureInPicturePermission &&
           !document.pictureInPictureElement
         ) {
@@ -1306,19 +1377,25 @@ export function App() {
   }, [
     closeDocumentPictureInPicture,
     hasPictureInPicturePermission,
-    isRunning,
+    isTimerRunning,
     requestPictureInPicture,
   ]);
 
   function handleModeChange(modeId: string) {
     const nextMode = getModeById(modeId, timerModes);
 
+    setActiveTimerTaskId(null);
     setActiveModeId(modeId);
     setRemainingSeconds(nextMode.duration);
     setIsRunning(false);
   }
 
   function handleTimerToggle() {
+    if (activeTimerTask) {
+      handleTaskToggle(activeTimerTask.id);
+      return;
+    }
+
     if (isTimerFinished) {
       prepareBellSound();
       setRemainingSeconds(activeMode.duration);
@@ -1334,6 +1411,11 @@ export function App() {
   }
 
   function handleTimerReset() {
+    if (activeTimerTask) {
+      handleTaskReset(activeTimerTask.id);
+      return;
+    }
+
     setRemainingSeconds(activeMode.duration);
     setIsRunning(false);
   }
@@ -1403,6 +1485,7 @@ export function App() {
     };
 
     setCustomModes((currentModes) => [...currentModes, newMode]);
+    setActiveTimerTaskId(null);
     setActiveModeId(newMode.id);
     setRemainingSeconds(newMode.duration);
     setIsRunning(false);
@@ -1418,6 +1501,7 @@ export function App() {
     if (activeModeId === modeId) {
       const fallbackMode = DEFAULT_TIMER_MODES[0];
 
+      setActiveTimerTaskId(null);
       setActiveModeId(fallbackMode.id);
       setRemainingSeconds(fallbackMode.duration);
       setIsRunning(false);
@@ -1477,6 +1561,8 @@ export function App() {
 
   function handleTaskToggle(taskId: string) {
     prepareBellSound();
+    setActiveTimerTaskId(taskId);
+    setIsRunning(false);
     setFocusTasks((currentTasks) =>
       currentTasks.map((task) => {
         if (task.id !== taskId) {
@@ -1511,10 +1597,15 @@ export function App() {
           : task,
       ),
     );
+    setActiveTimerTaskId((currentTaskId) =>
+      currentTaskId === taskId ? null : currentTaskId,
+    );
     setExpandedTaskId((currentTaskId) => (currentTaskId === taskId ? null : currentTaskId));
   }
 
   function handleTaskReset(taskId: string) {
+    setActiveTimerTaskId(taskId);
+    setIsRunning(false);
     setFocusTasks((currentTasks) =>
       currentTasks.map((task) =>
         task.id === taskId
@@ -1653,6 +1744,7 @@ export function App() {
 
         <div className={styles.timerDisplay}>
           <span className={styles.statusBadge}>{statusText}</span>
+          <span className={styles.timerContext}>{timerContextLabel}</span>
           <strong aria-live="polite" className={styles.timerValue}>
             {timerLabel}
           </strong>
@@ -1673,7 +1765,7 @@ export function App() {
 
           <button
             className={styles.secondaryButton}
-            disabled={remainingSeconds === activeMode.duration && !isRunning}
+            disabled={currentTimerRemaining === currentTimerDuration && !isTimerRunning}
             onClick={handleTimerReset}
             type="button"
           >
@@ -1695,8 +1787,8 @@ export function App() {
 
           <dl className={styles.sessionStats}>
             <div>
-              <dt>Modo atual</dt>
-              <dd>{activeMode.label}</dd>
+              <dt>Contador atual</dt>
+              <dd>{timerContextLabel}</dd>
             </div>
             <div>
               <dt>Focos hoje</dt>
@@ -1731,7 +1823,7 @@ export function App() {
             <article className={styles.focusIdeaCard}>
               <span>Termina às</span>
               <strong>{estimatedFinishTime}</strong>
-              <small>{isRunning ? 'em andamento' : 'se iniciar agora'}</small>
+              <small>{isTimerRunning ? 'em andamento' : 'se iniciar agora'}</small>
             </article>
           </div>
         </section>
