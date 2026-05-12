@@ -1,0 +1,465 @@
+[
+    {
+        "procedure_name": "Consulta",
+        "procedure_notes": null,
+        "specialty_name": "Oftalmologista",
+        "specialty_notes": null,
+        "rules": {
+            "min_age": null,
+            "max_age": null,
+            "requires_medical_order": false,
+            "preparation": "",
+            "delivery_time": "",
+            "notes": "- Consulta particular: R$ 250,00;\n- Cassems: R$ 65,00\n- IMPCG: R$ 40,00\n- Abraps / El Kadri / Óticas: R$ 150,00\n- BRV Saúde: R$ 30 a 100 (necessário agendar também com o convênio)\n- Pax: R$ 220,00"
+        },
+        "clinicServices": [
+            {
+                "offerId": "69fa0d69176473c8f89e87b3",
+                "professional": "Dra Carolina Bernal",
+                "professional_description": "A Dra. Carolina Bernal é especialista em córnea, catarata e cirurgia refrativa. Atua também com transplante de córnea, manejo do ceratocone e atendimento oftalmológico pediátrico.",
+                "health_plans": [
+                    {
+                        "name": "Abraps",
+                        "notes": null
+                    },
+                    {
+                        "name": "BRV saúde",
+                        "notes": "Para atendimentos pelo convênio BRV Saúde, é necessário realizar também o agendamento diretamente com o convênio, para que o atendimento seja devidamente registrado no sistema interno deles.\n"
+                    },
+                    {
+                        "name": "CASSI",
+                        "notes": null
+                    },
+                    {
+                        "name": "Cassems",
+                        "notes": null
+                    },
+                    {
+                        "name": "FAMEH",
+                        "notes": null
+                    },
+                    {
+                        "name": "Fidelidade Saúde El Kadri",
+                        "notes": null
+                    },
+                    {
+                        "name": "IMPCG",
+                        "notes": null
+                    },
+                    {
+                        "name": "PAS UFMS",
+                        "notes": null
+                    },
+                    {
+                        "name": "Particular Oftalmologista",
+                        "notes": null
+                    },
+                    {
+                        "name": "Pax",
+                        "notes": null
+                    },
+                    {
+                        "name": "Tabela Social",
+                        "notes": "Valor da consulta: R$ 250,00 "
+                    },
+                    {
+                        "name": "Unisaúde",
+                        "notes": null
+                    },
+                    {
+                        "name": "Óticas",
+                        "notes": null
+                    }
+                ],
+                "availability": [
+                    "Segunda - Tarde"
+                ]
+            },
+            {
+                "offerId": "69fa0e60176473c8f89ed433",
+                "professional": "Dr. Juliano Parmigiani",
+                "professional_description": "O Dr. Juliano Parmigiani é referência em oftalmologia, com grande experiência em cirurgia refrativa e tratamentos oculares avançados.",
+                "health_plans": [
+                    {
+                        "name": "Abraps",
+                        "notes": null
+                    },
+                    {
+                        "name": "BRV saúde",
+                        "notes": "Para atendimentos pelo convênio BRV Saúde, é necessário realizar também o agendamento diretamente com o convênio, para que o atendimento seja devidamente registrado no sistema interno deles.\n"
+                    },
+                    {
+                        "name": "CASSI",
+                        "notes": null
+                    },
+                    {
+                        "name": "Cassems",
+                        "notes": null
+                    },
+                    {
+                        "name": "FAMEH",
+                        "notes": null
+                    },
+                    {
+                        "name": "Fidelidade Saúde El Kadri",
+                        "notes": null
+                    },
+                    {
+                        "name": "IMPCG",
+                        "notes": null
+                    },
+                    {
+                        "name": "PAS UFMS",
+                        "notes": null
+                    },
+                    {
+                        "name": "Particular Oftalmologista",
+                        "notes": null
+                    },
+                    {
+                        "name": "Pax",
+                        "notes": null
+                    },
+                    {
+                        "name": "Tabela Social",
+                        "notes": "Valor da consulta: R$ 250,00 "
+                    },
+                    {
+                        "name": "Unisaúde",
+                        "notes": null
+                    },
+                    {
+                        "name": "Óticas",
+                        "notes": null
+                    }
+                ],
+                "availability": [
+                    "Segunda - Manha",
+                    "Segunda - Tarde",
+                    "Terca - Manha",
+                    "Terca - Tarde",
+                    "Quarta - Manha",
+                    "Quarta - Tarde",
+                    "Quinta - Tarde",
+                    "Sexta - Manha",
+                    "Sexta - Tarde"
+                ]
+            },
+            {
+                "offerId": "69fa0e8c176473c8f89ee1de",
+                "professional": "Dra. Ana Paula Gomes de Miranda",
+                "professional_description": "A Dra. Ana Paula é especializada em catarata e glaucoma, sendo muito reconhecida pelo cuidado acolhedor e pela precisão no acompanhamento da saúde ocular.",
+                "health_plans": [
+                    {
+                        "name": "Abraps",
+                        "notes": null
+                    },
+                    {
+                        "name": "BRV saúde",
+                        "notes": "Para atendimentos pelo convênio BRV Saúde, é necessário realizar também o agendamento diretamente com o convênio, para que o atendimento seja devidamente registrado no sistema interno deles.\n"
+                    },
+                    {
+                        "name": "CASSI",
+                        "notes": null
+                    },
+                    {
+                        "name": "Cassems",
+                        "notes": null
+                    },
+                    {
+                        "name": "FAMEH",
+                        "notes": null
+                    },
+                    {
+                        "name": "Fidelidade Saúde El Kadri",
+                        "notes": null
+                    },
+                    {
+                        "name": "IMPCG",
+                        "notes": null
+                    },
+                    {
+                        "name": "PAS UFMS",
+                        "notes": null
+                    },
+                    {
+                        "name": "Particular Oftalmologista",
+                        "notes": null
+                    },
+                    {
+                        "name": "Pax",
+                        "notes": null
+                    },
+                    {
+                        "name": "Tabela Social",
+                        "notes": "Valor da consulta: R$ 250,00 "
+                    },
+                    {
+                        "name": "Unisaúde",
+                        "notes": null
+                    },
+                    {
+                        "name": "Óticas",
+                        "notes": null
+                    }
+                ],
+                "availability": [
+                    "Segunda - Manha",
+                    "Terca - Manha",
+                    "Quarta - Manha",
+                    "Quinta - Manha",
+                    "Sexta - Manha"
+                ]
+            },
+            {
+                "offerId": "69fa0ed8176473c8f89ef3c8",
+                "professional": "Dra. Karina Mello",
+                "professional_description": "A Dra. Karina é especialista responsável por plástica ocular.",
+                "health_plans": [
+                    {
+                        "name": "Abraps",
+                        "notes": null
+                    },
+                    {
+                        "name": "BRV saúde",
+                        "notes": "Para atendimentos pelo convênio BRV Saúde, é necessário realizar também o agendamento diretamente com o convênio, para que o atendimento seja devidamente registrado no sistema interno deles.\n"
+                    },
+                    {
+                        "name": "CASSI",
+                        "notes": null
+                    },
+                    {
+                        "name": "Cassems",
+                        "notes": null
+                    },
+                    {
+                        "name": "FAMEH",
+                        "notes": null
+                    },
+                    {
+                        "name": "Fidelidade Saúde El Kadri",
+                        "notes": null
+                    },
+                    {
+                        "name": "IMPCG",
+                        "notes": null
+                    },
+                    {
+                        "name": "PAS UFMS",
+                        "notes": null
+                    },
+                    {
+                        "name": "Particular Oftalmologista",
+                        "notes": null
+                    },
+                    {
+                        "name": "Pax",
+                        "notes": null
+                    },
+                    {
+                        "name": "Tabela Social",
+                        "notes": "Valor da consulta: R$ 250,00 "
+                    },
+                    {
+                        "name": "Unisaúde",
+                        "notes": null
+                    },
+                    {
+                        "name": "Óticas",
+                        "notes": null
+                    }
+                ],
+                "availability": [
+                    "Quinta - Manha",
+                    "Quinta - Tarde"
+                ]
+            },
+            {
+                "offerId": "69fa0efb176473c8f89eff55",
+                "professional": "Dra. Jessica Feltraco",
+                "professional_description": "A Dra. Jessica cuida da saúde ocular de toda a família, unindo alta precisão técnica a um atendimento humanizado.",
+                "health_plans": [
+                    {
+                        "name": "Abraps",
+                        "notes": null
+                    },
+                    {
+                        "name": "BRV saúde",
+                        "notes": "Para atendimentos pelo convênio BRV Saúde, é necessário realizar também o agendamento diretamente com o convênio, para que o atendimento seja devidamente registrado no sistema interno deles.\n"
+                    },
+                    {
+                        "name": "CASSI",
+                        "notes": null
+                    },
+                    {
+                        "name": "Cassems",
+                        "notes": null
+                    },
+                    {
+                        "name": "FAMEH",
+                        "notes": null
+                    },
+                    {
+                        "name": "Fidelidade Saúde El Kadri",
+                        "notes": null
+                    },
+                    {
+                        "name": "IMPCG",
+                        "notes": null
+                    },
+                    {
+                        "name": "PAS UFMS",
+                        "notes": null
+                    },
+                    {
+                        "name": "Particular Oftalmologista",
+                        "notes": null
+                    },
+                    {
+                        "name": "Pax",
+                        "notes": null
+                    },
+                    {
+                        "name": "Tabela Social",
+                        "notes": "Valor da consulta: R$ 250,00 "
+                    },
+                    {
+                        "name": "Unisaúde",
+                        "notes": null
+                    },
+                    {
+                        "name": "Óticas",
+                        "notes": null
+                    }
+                ],
+                "availability": [
+                    "Sabado - Manha"
+                ]
+            },
+            {
+                "offerId": "69fa0f48176473c8f89f1765",
+                "professional": "Dra. Mayra Prado Rodrigues",
+                "professional_description": "A Dra. Mayra é nossa oftalmologista geral, responsável por realizar o check-up completo da sua visão.",
+                "health_plans": [
+                    {
+                        "name": "Abraps",
+                        "notes": null
+                    },
+                    {
+                        "name": "BRV saúde",
+                        "notes": "Para atendimentos pelo convênio BRV Saúde, é necessário realizar também o agendamento diretamente com o convênio, para que o atendimento seja devidamente registrado no sistema interno deles.\n"
+                    },
+                    {
+                        "name": "CASSI",
+                        "notes": null
+                    },
+                    {
+                        "name": "Cassems",
+                        "notes": null
+                    },
+                    {
+                        "name": "FAMEH",
+                        "notes": null
+                    },
+                    {
+                        "name": "Fidelidade Saúde El Kadri",
+                        "notes": null
+                    },
+                    {
+                        "name": "IMPCG",
+                        "notes": null
+                    },
+                    {
+                        "name": "PAS UFMS",
+                        "notes": null
+                    },
+                    {
+                        "name": "Particular Oftalmologista",
+                        "notes": null
+                    },
+                    {
+                        "name": "Pax",
+                        "notes": null
+                    },
+                    {
+                        "name": "Tabela Social",
+                        "notes": "Valor da consulta: R$ 250,00 "
+                    },
+                    {
+                        "name": "Unisaúde",
+                        "notes": null
+                    },
+                    {
+                        "name": "Óticas",
+                        "notes": null
+                    }
+                ],
+                "availability": [
+                    "Quarta - Tarde"
+                ]
+            },
+            {
+                "offerId": "69fa0f76176473c8f89f23e5",
+                "professional": "Dr. Gustavo Tonon",
+                "professional_description": "O Dr. Gustavo é referência em exames de rotina e diagnóstico ocular. Ele atende às terças e quintas-feiras no período da tarde.",
+                "health_plans": [
+                    {
+                        "name": "Abraps",
+                        "notes": null
+                    },
+                    {
+                        "name": "BRV saúde",
+                        "notes": "Para atendimentos pelo convênio BRV Saúde, é necessário realizar também o agendamento diretamente com o convênio, para que o atendimento seja devidamente registrado no sistema interno deles.\n"
+                    },
+                    {
+                        "name": "CASSI",
+                        "notes": null
+                    },
+                    {
+                        "name": "Cassems",
+                        "notes": null
+                    },
+                    {
+                        "name": "FAMEH",
+                        "notes": null
+                    },
+                    {
+                        "name": "Fidelidade Saúde El Kadri",
+                        "notes": null
+                    },
+                    {
+                        "name": "IMPCG",
+                        "notes": null
+                    },
+                    {
+                        "name": "PAS UFMS",
+                        "notes": null
+                    },
+                    {
+                        "name": "Particular Oftalmologista",
+                        "notes": null
+                    },
+                    {
+                        "name": "Pax",
+                        "notes": null
+                    },
+                    {
+                        "name": "Tabela Social",
+                        "notes": "Valor da consulta: R$ 250,00 "
+                    },
+                    {
+                        "name": "Unisaúde",
+                        "notes": null
+                    },
+                    {
+                        "name": "Óticas",
+                        "notes": null
+                    }
+                ],
+                "availability": [
+                    "Sexta - Manha"
+                ]
+            }
+        ]
+    }
+]

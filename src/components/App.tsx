@@ -1538,13 +1538,21 @@ export function App() {
           <div className={styles.navLinkGroup}>
             <button
               aria-haspopup="dialog"
+              aria-expanded={activeOverlay === 'sound'}
+              className={`${styles.navAction} ${
+                activeOverlay === 'sound' ? styles.navActionActive : ''
+              }`}
               onClick={() => setActiveOverlay('sound')}
               type="button"
             >
-              Toque
+              Sino
             </button>
             <button
               aria-haspopup="dialog"
+              aria-expanded={activeOverlay === 'task'}
+              className={`${styles.navAction} ${
+                activeOverlay === 'task' ? styles.navActionActive : ''
+              }`}
               onClick={() => setActiveOverlay('task')}
               type="button"
             >
@@ -1553,7 +1561,10 @@ export function App() {
           </div>
           <button
             aria-haspopup="dialog"
-            className={styles.navCta}
+            aria-expanded={activeOverlay === 'metrics'}
+            className={`${styles.navCta} ${
+              activeOverlay === 'metrics' ? styles.navActionActive : ''
+            }`}
             onClick={() => setActiveOverlay('metrics')}
             type="button"
           >
@@ -2140,7 +2151,7 @@ export function App() {
 
       <a
         className={styles.githubLink}
-        href="https://github.com/Magnumja"
+        href="https://github.com/Magnumja/focuss_pomodoro_react"
         rel="noreferrer"
         target="_blank"
       >
